@@ -405,6 +405,14 @@ async function loadHistory() {
 }
 
 async function init() {
+  // 版本号从 manifest 动态读取（便于确认当前装的版本）
+  try {
+    const v = chrome.runtime.getManifest().version
+    const el = $("verLine")
+    if (el) el.textContent = `BIO LOOKUP · v${v}`
+  } catch (e) {
+    /* ignore */
+  }
   await loadHistory()
   qInput.focus()
   $("batchDb").innerHTML =

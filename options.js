@@ -40,6 +40,15 @@ $("floatToggle").addEventListener("change", async (e) => {
   await refreshFloat()
 })
 
+/* ── 右键菜单重建 ── */
+$("rebuildMenu").addEventListener("click", async () => {
+  const res = await chrome.runtime.sendMessage({ type: "menu:rebuild" })
+  $("menuStatus").textContent = res?.ok
+    ? "✅ 已重建。现在去任意网页选中文本试试右键。"
+    : "⚠️ 重建失败，请重新加载扩展后再试。"
+  toast(res?.ok ? "右键菜单已重建" : "重建失败")
+})
+
 /* ── Zotero 联动开关 ── */
 const ZOTERO_ORIGIN = "http://127.0.0.1:23119/*"
 

@@ -70,6 +70,18 @@
   </section>
 
   <section class="panel">
+    <h2>右键菜单</h2>
+    <p class="tip">
+      本扩展的右键查询菜单在<strong>安装/更新扩展时自动创建</strong>。若你在网页上选中文本右键时<strong>看不到「生信快查」</strong>，
+      点下面的按钮重建一次即可（通常是浏览器回收后台服务或更新扩展后的偶发情况）。
+    </p>
+    <div class="row">
+      <button class="btn" id="rebuildMenu" style="flex:0 0 auto;">🔧 重新创建右键菜单</button>
+    </div>
+    <p class="status" id="menuStatus"></p>
+  </section>
+
+  <section class="panel">
     <h2>添加自定义数据库</h2>
     <div class="grid">
       <label for="cdLabel">名称 *</label>

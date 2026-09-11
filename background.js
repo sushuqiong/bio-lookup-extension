@@ -379,6 +379,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         sendResponse({ ok: true })
         return
       }
+      if (msg?.type === "menu:rebuild") {
+        createMenus()
+        flashBadge("✓", "#64ffda")
+        sendResponse({ ok: true })
+        return
+      }
       if (msg?.type === "setFloat") {
         await chrome.storage.local.set({ floatEnabled: !!msg.enabled })
         const ok = await syncFloatScript()
