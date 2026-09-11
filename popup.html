@@ -11,12 +11,21 @@
       <span class="logo">🧬</span>
       <div>
         <strong>生信快查</strong>
-        <span class="sub">Bio Lookup · 查询历史</span>
+        <span class="sub">Bio Lookup · v0.2</span>
       </div>
     </div>
-    <span class="count" id="count">0</span>
+    <div class="head-right">
+      <span class="count" id="count">0</span>
+      <button class="icon-btn" id="openOptions" title="设置（自定义数据库 / 页面浮层）">⚙️</button>
+    </div>
   </header>
 
+  <nav class="tabs">
+    <button class="tab is-active" data-tab="history">🕘 查询历史</button>
+    <button class="tab" data-tab="batch">📚 批量查询</button>
+  </nav>
+
+  <section id="pane-history">
   <section class="query-box">
     <div class="query-row">
       <input id="q" type="text" placeholder="输入基因 / rsID / GEO / 坐标 / PMID…" autocomplete="off" spellcheck="false">
@@ -50,6 +59,22 @@
     <button id="export" class="btn">⬇️ 导出 CSV</button>
     <button id="clear" class="btn danger">🗑️ 清空历史</button>
   </footer>
+  </section>
+
+  <section id="pane-batch" hidden>
+    <div class="batch-box">
+      <p class="batch-tip">每行一条（也支持逗号/分号分隔），最多 20 条。适合把论文里的基因列表、变异清单一次性查完。</p>
+      <textarea id="batchInput" rows="6" placeholder="TP53&#10;BRCA1&#10;rs80357906&#10;GSE123456&#10;chr17:7676154 C>T"></textarea>
+      <div class="batch-mode">
+        <label><input type="radio" name="bmode" value="auto" checked> 各自动类型 · 首选库</label>
+        <select id="batchDb" aria-label="指定数据库">
+          <option value="">或指定统一数据库…</option>
+        </select>
+      </div>
+      <div class="batch-preview" id="batchPreview"></div>
+      <button class="btn primary" id="runBatch" style="width:100%; margin-top:10px;">🚀 批量打开（后台标签）</button>
+    </div>
+  </section>
 
   <div class="toast" id="toast"></div>
   <script type="module" src="popup.js"></script>

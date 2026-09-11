@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>生信快查 · 设置</title>
+  <link rel="stylesheet" href="popup.css">
+  <style>
+    body { width: auto; max-width: 860px; margin: 0 auto; padding: 28px 22px 60px; max-height: none; }
+    h1 { font-size: 20px; margin-bottom: 6px; }
+    .lead { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+    .panel {
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      margin-bottom: 20px;
+    }
+    .panel h2 { font-size: 15px; margin-bottom: 12px; }
+    .grid { display: grid; grid-template-columns: 90px 1fr; gap: 10px 12px; align-items: center; }
+    .grid label { font-size: 12.5px; color: var(--muted); }
+    .grid input, .grid select {
+      padding: 9px 11px; border-radius: 9px; border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.06); color: var(--text); font-size: 13px; outline: none;
+    }
+    .grid input:focus, .grid select:focus { border-color: var(--teal); }
+    .grid select option { background: #16224a; }
+    .row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12.5px; }
+    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 600; font-size: 11.5px; letter-spacing: 0.04em; }
+    td.mono { font-family: var(--mono); font-size: 11.5px; color: var(--teal); word-break: break-all; }
+    .tip { font-size: 12px; color: var(--muted); line-height: 1.75; margin-top: 10px; }
+    code { font-family: var(--mono); background: rgba(100, 255, 218, 0.1); color: var(--teal); padding: 1px 6px; border-radius: 5px; }
+    .switch { display: flex; align-items: center; gap: 10px; }
+    .switch input { width: 17px; height: 17px; accent-color: #7c3aed; }
+    .status { font-size: 12px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <h1>🧬 生信快查 · 设置</h1>
+  <p class="lead">自定义数据库、页面浮层开关。所有设置只保存在本地浏览器（<code>chrome.storage.local</code>），不上传任何服务器。</p>
+
+  <section class="panel">
+    <h2>页面浮层（双击选中文本弹出查询卡片）</h2>
+    <div class="switch">
+      <input type="checkbox" id="floatToggle">
+      <label for="floatToggle" style="font-size:13px;">启用页面浮层</label>
+    </div>
+    <p class="tip">
+      开启后，在任意网页**双击**选中基因名 / rsID / 变异坐标，会在鼠标旁弹出小卡片，直接点库跳转。<br>
+      首次开启需要授权「读取网页」权限（<code>optional_host_permissions</code>）；关闭开关即撤销注入。默认**不申请**该权限。
+    </p>
+    <p class="status" id="floatStatus"></p>
+  </section>
+
+  <section class="panel">
+    <h2>添加自定义数据库</h2>
+    <div class="grid">
+      <label for="cdLabel">名称 *</label>
+      <input id="cdLabel" type="text" placeholder="例如 我的实验室 BLAST 镜像">
+      <label for="cdIcon">图标</label>
+      <input id="cdIcon" type="text" placeholder="🧬（emoji，可留空）" maxlength="4">
+      <label for="cdTemplate">URL 模板 *</label>
+      <input id="cdTemplate" type="text" placeholder="https://example.org/search?q={q}">
+      <label for="cdTypes">适用类型</label>
+      <select id="cdTypes" multiple size="4" style="height:auto;">
+        <option value="*" selected>全部类型</option>
+        <option value="gene">🧬 基因</option>
+        <option value="variant_rs">🔎 SNP (rsID)</option>
+        <option value="variant_hgvs">🧪 变异 HGVS</option>
+        <option value="variant_coord">🌍 变异坐标</option>
+        <option value="geo">📦 GEO 数据集</option>
+        <option value="pmid">📚 文献</option>
+        <option value="doi">🔖 DOI</option>
+        <option value="region">🗺️ 基因组区间</option>
+        <option value="sequence">🚀 核酸序列</option>
+      </select>
+    </div>
+    <p class="tip">
+      URL 模板里用 <code>{q}</code> 代表查询词（会自动 URL 编码）。例如：<br>
+      <code>https://my-lab.org/gene/{q}</code> → 选中 <code>TP53</code> 时打开 <code>https://my-lab.org/gene/TP53</code><br>
+      按住 Ctrl/Cmd 可多选「适用类型」，不选则对所有类型生效。
+    </p>
+    <div class="row">
+      <button class="btn primary" id="addBtn" style="flex:0 0 auto; padding:9px 20px;">＋ 添加</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>已添加的自定义数据库</h2>
+    <table>
+      <thead>
+        <tr><th style="width:56px;">图标</th><th style="width:180px;">名称</th><th>URL 模板</th><th style="width:150px;">适用类型</th><th style="width:70px;"></th></tr>
+      </thead>
+      <tbody id="cdBody"></tbody>
+    </table>
+    <p class="tip" id="cdEmpty">还没有自定义数据库。添加后会出现在右键菜单和浮层卡片中（排在官方库之后）。</p>
+    <div class="row">
+      <button class="btn" id="exportCd">⬇️ 导出配置</button>
+      <button class="btn" id="importCd">⬆️ 导入配置</button>
+      <input type="file" id="importFile" accept="application/json" hidden>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+  <script type="module" src="options.js"></script>
+</body>
+</html>

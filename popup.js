@@ -213,11 +213,93 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]))
 }
 
-async function init() {
+/* ── Tab 切换 ── */
+document.querySelectorAll(".tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("is-active", t === tab))
+    const name = tab.dataset.tab
+    $("pane-history").hidden = name !== "history"
+    $("pane-batch").hidden = name !== "batch"
+  })
+})
+
+$("openOptions").addEventListener("click", () => chrome.runtime.openOptionsPage())
+
+/* ── 批量查询 ── */
+const batchInput = $("batchInput")
+const batchPreview = $("batchPreview")
+
+function parseBatchPopup(text) {
+  return String(text)
+    .split(/[\n\r,;，；\t|]+/)
+    .map((s) => s.trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, ""))
+    .filter((s) => s.length >= 2 && s.length <= 200)
+    .slice(0, 20)
+}
+
+function renderBatchPreview() {
+  const items = parseBatchPopup(batchInput.value)
+  if (!items.length) {
+    batchPreview.innerHTML = ""
+    return
+  }
+  batchPreview.innerHTML = items
+    .map((q) => {
+      const c = classify(q)
+      const icon = c.dbs[0] && DBS[c.dbs[0]] ? DBS[c.dbs[0]].icon : "🔍"
+      return `<span class="bp-item" title="${escapeHtml(c.name)} · ${escapeHtml(q)}">${c.emoji}${escapeHtml(q.slice(0, 16))}<span style="opacity:.6">${icon}</span></span>`
+    })
+    .join("")
+}
+
+batchInput.addEventListener("input", renderBatchPreview)
+
+$("batchDb").addEventListener("change", (e) => {
+  if (e.target.value) {
+    document.querySelectorAll('input[name="bmode"]').forEach((r) => (r.checked = false))
+  }
+})
+
+document.querySelectorAll('input[name="bmode"]').forEach((r) => {
+  r.addEventListener("change", () => {
+    if (r.checked) $("batchDb").value = ""
+  })
+})
+
+$("runBatch").addEventListener("click", async () => {
+  const text = batchInput.value.trim()
+  if (!text) return toast("请先粘贴要查询的内容")
+  const items = parseBatchPopup(text)
+  if (!items.length) return toast("没有可识别的条目")
+  const dbId = $("batchDb").value
+  const mode = dbId ? dbId : "auto"
+
+  const res = await chrome.runtime.sendMessage({ type: "runBatch", text, mode })
+  if (res?.ok) {
+    toast(`已打开 ${items.length} 个后台标签`)
+    batchInput.value = ""
+    batchPreview.innerHTML = ""
+    setTimeout(loadHistory, 300)
+  } else {
+    toast("批量执行失败")
+  }
+})
+
+async function loadHistory() {
   const d = await chrome.storage.local.get("history")
   history = Array.isArray(d.history) ? d.history : []
   render()
+}
+
+async function init() {
+  await loadHistory()
   qInput.focus()
+  // 填充批量目标库下拉
+  $("batchDb").innerHTML =
+    '<option value="">或指定统一数据库…</option>' +
+    Object.entries(DBS)
+      .map(([id, db]) => `<option value="${id}">${db.icon} ${db.label}</option>`)
+      .join("")
 }
 
 init()
