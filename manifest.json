@@ -1,13 +1,22 @@
 {
   "manifest_version": 3,
   "name": "生信快查 · Bio Lookup",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "选中基因名 / GEO 编号 / 变异位点 / rsID / PMID，右键一键跳转 NCBI、Ensembl、gnomAD、ClinVar 等 15+ 生信数据库；支持 VCF 批量注释、页面浮层、批量查询、自定义数据库与查询历史。",
   "author": "sushuqiong",
   "homepage_url": "https://github.com/sushuqiong/bio-lookup-extension",
-  "minimum_chrome_version": "102",
-  "permissions": ["contextMenus", "storage", "scripting"],
-  "optional_host_permissions": ["http://*/*", "https://*/*", "http://127.0.0.1:23119/*"],
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "scripting",
+    "downloads"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*",
+    "http://127.0.0.1:23119/*"
+  ],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -24,7 +33,9 @@
   "options_page": "options.html",
   "commands": {
     "_execute_action": {
-      "suggested_key": { "default": "Alt+Shift+B" },
+      "suggested_key": {
+        "default": "Alt+Shift+B"
+      },
       "description": "打开生信快查面板"
     }
   },

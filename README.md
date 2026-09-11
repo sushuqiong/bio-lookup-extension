@@ -53,6 +53,26 @@ chr1    12345     .           A    G
 | 6 | 扩展重载后 content script `sendMessage` 静默失败 | 🟡 | `chrome.runtime.lastError` + try/catch 兜底 |
 | 7 | 键盘用户无法唤起浮层 | 🟡 | 加 `Alt+Shift+B` 快捷键打开面板 |
 
+**v0.3.1 追加修复（第二轮审查）**
+
+| # | 问题 | 严重度 | 修复 |
+|---|---|---|---|
+| 8 | VCF CSV 导出用 `data:` URL + `chrome.tabs.create` → **现代 Chrome/Edge 禁止顶层导航到 `data:`，导出必然失败**（SW 也无 DOM/createObjectURL） | 🔴 | 改用 `chrome.downloads.download()`（`downloads` 权限），SW 环境下唯一可靠路径 |
+| 9 | `minimum_chrome_version: 102` 但动态菜单依赖 `contextMenus.onShown`（**需要 116+**）→ 老版本菜单不更新 | 🟡 | 提升至 `116` |
+
+## ⚠️ 已知限制（诚实声明）
+
+| 限制 | 原因 | 影响 |
+|---|---|---|
+| 大写英文单词可能误判为基因（如 `COVID`、`MISSING`）、7–9 位数字可能误判为 PMID（如样本量、金额） | 正则识别的固有假阳性，无外部词表 | 菜单会给出"基因/文献"库；**每类菜单末尾都有兜底「NCBI 全库检索 / Google Scholar」可退回** |
+| 浮层在 `chrome://` 页面、PDF 阅读器、扩展商店页不生效 | 浏览器禁止在这些页面注入脚本 | 右键菜单在普通网页仍可用 |
+| 内嵌浏览器（VS Code 内置、Zotero 内置）中右键菜单可能不响应 | `contextMenus` 仅工作于 Chrome 内核宿主 | 请在系统浏览器中使用 |
+| Zotero 联动需 Zotero 7 运行且手动开启「允许其他应用通讯」 | Zotero 本地 API 的准入门槛 | 未开启时菜单项存在但会提示（badge 显示 ✗） |
+| 批量/VCF 打开上限 15–20 条 | 防止一次性开爆浏览器标签 | 菜单标题已显示实际条数 |
+| 仅支持桌面版 Chrome/Edge 116+ | MV3 桌面扩展 | 移动端浏览器不支持扩展 |
+
+> 测试环境说明：本项目在 Node 下完成识别引擎的 67 项自动化测试，但**插件的浏览器内交互（右键菜单/浮层/下载）需在真实浏览器中人工验证**——欢迎实测后提 Issue。
+
 
 ---
 
@@ -184,6 +204,7 @@ chr17:7676154 C>T
 | `contextMenus` | 显示右键菜单 | ✅ |
 | `storage` | 本地保存历史与自定义配置 | ✅ |
 | `scripting` | 动态注册/注销页面浮层脚本 | ✅（浮层用） |
+| `downloads` | 保存 VCF 规范化查询词 CSV | ✅（导出用） |
 | `optional_host_permissions`（http/https） | **仅在你开启页面浮层时**申请，用于注入浮层 | ❌ 默认不申请 |
 | `optional_host_permissions`（127.0.0.1:23119） | **仅在你开启 Zotero 联动时**申请，只访问本机 Zotero API | ❌ 默认不申请 |
 

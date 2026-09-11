@@ -256,14 +256,13 @@ async function runVcfBatch(text, target) {
   const used = rows.slice(0, limit)
 
   if (target === "csv") {
-    // 导出规范化查询词：CHROM,POS,ID,REF,ALT,gnomAD,VCF原行
+    // 导出规范化查询词：CHROM,POS,ID,REF,ALT,gnomAD_query,VCF原行
     const header = "CHROM,POS,ID,REF,ALT,gnomAD_query,original"
     const body = used
       .map((r) => [r.chrom, r.pos, r.id || ".", r.ref, r.alts.join("|"), r.query, r.raw || ""].map((v) => `"${v}"`).join(","))
       .join("\n")
-    const url =
-      "data:text/csv;charset=utf-8," + encodeURIComponent("\uFEFF" + header + "\n" + body)
-    await downloadText(url, `vcf-queries-${Date.now()}.csv`)
+    const csv = "\uFEFF" + header + "\n" + body
+    await downloadCsv(csv, `vcf-queries-${new Date().toISOString().slice(0, 10)}.csv`)
     return
   }
 
@@ -297,11 +296,23 @@ async function runVcfBatch(text, target) {
   await updateBadge()
 }
 
-/** 用 data: URL 触发下载（SW 内无 DOM，改用 downloads 权限替代：简化为打开 CSV 标签页供手动保存） */
-async function downloadText(url, filename) {
-  // MV3 service worker 无 <a download>；用 chrome.downloads 需要额外权限，
-  // 这里退化为在新标签页打开 data URL（用户可 ⌘S 保存），零权限依赖。
-  await chrome.tabs.create({ url, active: true })
+/** 用 chrome.downloads 保存 CSV
+ * 修复 v0.3.0 缺陷：MV3 service worker 既无 DOM（不能 <a download>）也无 URL.createObjectURL，
+ * 且现代 Chrome/Edge 禁止顶层导航到 data: URL（旧写法 chrome.tabs.create({url:"data:..."}) 会失败）。
+ * chrome.downloads.download() 接受 data: URL（下载而非导航），是 SW 环境下唯一可靠路径。
+ */
+async function downloadCsv(text, filename) {
+  const url = "data:text/csv;charset=utf-8," + encodeURIComponent(text)
+  try {
+    await chrome.downloads.download({ url, filename, saveAs: false })
+    chrome.action.setBadgeText({ text: "⬇" })
+    chrome.action.setBadgeBackgroundColor({ color: "#64ffda" })
+    setTimeout(() => updateBadge(), 1800)
+  } catch (e) {
+    chrome.action.setBadgeText({ text: "✗" })
+    chrome.action.setBadgeBackgroundColor({ color: "#f472b6" })
+    setTimeout(() => updateBadge(), 2200)
+  }
 }
 
 /* ── Zotero 联动：查询本地 Zotero 库并跳转选中 ── */
