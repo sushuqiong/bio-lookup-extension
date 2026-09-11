@@ -12,6 +12,15 @@ Chrome / Edge 浏览器扩展（Manifest V3）· 零依赖零构建 · 默认不
 
 ---
 
+## 🆕 v0.4.3 稳定性修复
+
+| # | 问题 | 修复 |
+|---|---|---|
+| 1 | 点扩展图标后**三个面板内容重叠**（查询/批量/统计同时渲染） | `display:flex` 覆盖了 `hidden` 属性 → 加 `[hidden]{display:none!important}`；已用 headless 渲染 + OCR 验证 |
+| 2 | 选中文本右键**看不到扩展菜单** | v0.4.0 在 `onShown` 里 `removeAll`+重建（异步时序问题会清空菜单）→ 改为**固定菜单 + 智能标题**；并加「🔧 重新创建右键菜单」按钮 |
+| 3 | 服务脚本潜在兼容风险 | **service worker 改为单文件**（`background.bundle.js`，构建时合并 genedata+classify+background，去掉 ESM 语法），消除 `type:"module"` 的兼容问题 |
+| 4 | 出问题难自查 | 菜单创建结果写入 `storage.menuDiag`，**设置页直接显示**「上次创建时间 / 项数 / 错误数」 |
+
 ## 🆕 v0.4 新功能
 
 ### 🎨 类型主题色系统（色彩贯穿全局）

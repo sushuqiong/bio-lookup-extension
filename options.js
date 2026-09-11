@@ -40,6 +40,23 @@ $("floatToggle").addEventListener("change", async (e) => {
   await refreshFloat()
 })
 
+/* ── 右键菜单诊断信息 ── */
+async function refreshMenuDiag() {
+  const d = await chrome.storage.local.get("menuDiag")
+  const diag = d.menuDiag
+  const ver = chrome.runtime.getManifest().version
+  const el = $("menuDiag")
+  if (!el) return
+  if (!diag) {
+    el.textContent = `扩展版本 v${ver} · 尚未记录菜单创建信息（重启浏览器或点上方按钮重建试试）`
+    return
+  }
+  const t = new Date(diag.ts).toLocaleString("zh-CN")
+  const errN = (diag.errors || []).length
+  el.textContent = `扩展版本 v${ver} · 上次创建菜单：${t} · 共 ${diag.total} 项 · 错误 ${errN} 个`
+  if (errN) el.textContent += `（${(diag.errors || []).slice(0, 2).join("；")}）`
+}
+
 /* ── 右键菜单重建 ── */
 $("rebuildMenu").addEventListener("click", async () => {
   const res = await chrome.runtime.sendMessage({ type: "menu:rebuild" })
@@ -47,6 +64,7 @@ $("rebuildMenu").addEventListener("click", async () => {
     ? "✅ 已重建。现在去任意网页选中文本试试右键。"
     : "⚠️ 重建失败，请重新加载扩展后再试。"
   toast(res?.ok ? "右键菜单已重建" : "重建失败")
+  setTimeout(refreshMenuDiag, 700)
 })
 
 /* ── Zotero 联动开关 ── */
@@ -220,4 +238,5 @@ function escapeHtml(s) {
 }
 
 refreshFloat()
+refreshMenuDiag()
 renderCustom()
