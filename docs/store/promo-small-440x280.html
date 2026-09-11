@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#0b1224;color:#e6f1ff;overflow:hidden}
+.wrap{position:relative;background:radial-gradient(900px 460px at 82% 8%,rgba(124,58,237,.42),transparent 62%),
+radial-gradient(700px 420px at 4% 96%,rgba(100,255,218,.20),transparent 58%),linear-gradient(135deg,#0b1224,#111c42)}
+.logo{position:absolute;border-radius:24px;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+h1{font-weight:800;letter-spacing:.01em}
+h1 .hl{color:#64ffda}
+p{color:rgba(226,232,255,.76);line-height:1.75}
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pill{font-size:14px;padding:8px 16px;border-radius:999px;border:1px solid rgba(100,255,218,.3);background:rgba(100,255,218,.09);color:#64ffda;font-weight:600}
+.pill.v{border-color:rgba(167,139,250,.34);background:rgba(167,139,250,.12);color:#c4b5fd}
+.chain{position:absolute;font-family:ui-monospace,Consolas,monospace;font-size:13px;color:rgba(226,232,255,.5);letter-spacing:.06em}
+
+.wrap{width:440px;height:280px;padding:26px 28px;display:flex;flex-direction:column;justify-content:center;gap:14px}
+.logo{position:static;width:58px;height:58px;border-radius:14px;box-shadow:0 10px 26px rgba(0,0,0,.4)}
+h1{font-size:26px;line-height:1.25}
+p{font-size:12.5px;line-height:1.7}
+.pills{gap:7px}
+.pill{font-size:11px;padding:5px 11px}
+</style></head><body>
+<div class="wrap">
+  <img class="logo" src="../icons/icon128.png" alt="">
+  <h1>生信快查 · <span class="hl">Bio Lookup</span></h1>
+  <p>选中基因 / rsID / 变异位点，右键一键跳转 15+ 生信数据库，自动留痕查询历史。</p>
+  <div class="pills"><span class="pill">🧬 智能识别</span><span class="pill v">🧾 VCF 批量</span></div>
+</div></body></html>

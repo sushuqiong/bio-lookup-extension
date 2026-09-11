@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#fff;color:#1f2937;overflow:hidden}
+.page{width:1280px;height:800px;padding:46px 60px;position:relative;background:linear-gradient(180deg,#f8fafc,#fff)}
+.paper-title{font-size:30px;font-weight:800;color:#0f172a;line-height:1.35;margin-bottom:10px}
+.paper-meta{font-size:13.5px;color:#64748b;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #e2e8f0}
+.paper-text{font-size:16.5px;line-height:2.05;color:#334155;max-width:860px}
+.paper-text p{margin-bottom:16px}
+.sel{background:rgba(100,255,218,.28);border-bottom:2px solid #0d9488;padding:1px 2px;font-weight:600;color:#0f172a}
+.sel2{background:rgba(167,139,250,.26);border-bottom:2px solid #7c3aed;padding:1px 2px;font-weight:600;color:#0f172a}
+.vcf{font-family:ui-monospace,Consolas,monospace;font-size:14.5px;line-height:1.85;background:#0f172a;color:#e2e8f0;padding:20px 22px;border-radius:12px;margin:18px 0;white-space:pre}
+.vcf .hl{background:rgba(100,255,218,.22);color:#64ffda;border-radius:3px;padding:0 2px}
+.caption{position:absolute;left:60px;bottom:34px;font-size:14px;color:#64748b}
+.caption b{color:#0f172a}
+/* 右键菜单（模拟 Chromium 菜单外观） */
+.menu{position:absolute;width:296px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;
+box-shadow:0 14px 40px rgba(15,23,42,.22),0 2px 8px rgba(15,23,42,.10);padding:6px;font-size:13.5px;z-index:9}
+.menu-title{font-size:12px;color:#7c3aed;font-weight:700;padding:8px 10px 6px;border-bottom:1px solid #f1f5f9;margin-bottom:4px;display:flex;gap:6px;align-items:center}
+.menu-title .q{font-family:ui-monospace,Consolas,monospace;color:#0f172a;font-weight:600}
+.item{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;color:#1e293b}
+.item .ic{width:18px;text-align:center;font-size:14px}
+.item.hover{background:#ede9fe;color:#5b21b6;font-weight:600}
+.item .arrow{margin-left:auto;color:#94a3b8;font-size:11px}
+.sep{height:1px;background:#e9eef5;margin:5px 6px}
+.tag{display:inline-block;font-family:ui-monospace,Consolas,monospace;font-size:10.5px;background:#f1f5f9;color:#475569;border-radius:999px;padding:2px 8px;margin-left:auto}
+</style></head><body>
+<div class="page">
+  <h1 class="paper-title">体细胞变异清单（VCF 片段）</h1>
+  <p class="paper-meta">Supplementary Table S2 · 选中整段 VCF → 右键批量注释</p>
+  <div class="vcf">##fileformat=VCFv4.2
+#CHROM  POS       ID          REF  ALT  QUAL  FILTER  INFO
+<span class="hl">17      7676154   rs80357906  C    T    .     .       .</span>
+<span class="hl">chr1    12345     .           A    G    .     .       .</span>
+<span class="hl">2       54321     .           G    A    .     .       .</span>
+<span class="hl">19      44908684  rs429358    T    C    .     .       .</span></div>
+  <div class="paper-text">
+    <p>插件会解析每行的 CHROM / POS / ID / REF / ALT 字段，并<b>归一化</b>成各数据库能直接识别的格式——rsID 走 SNP 数据库，坐标则转为 <code>17-7676154-C-T</code> 这类 gnomAD 标准写法。</p>
+  </div>
+  <div class="menu" style="top:152px;left:742px;width:340px"><div class="menu-title">生信快查 · 🧾 VCF 4 条变异</div><div class="item hover"><span class="ic">🌍</span><span>全部查 gnomAD（4 条）</span></div><div class="item"><span class="ic">🏥</span><span>全部查 ClinVar（4 条）</span></div><div class="item"><span class="ic">🧪</span><span>全部查 VarSome（4 条）</span></div><div class="sep"></div><div class="item"><span class="ic">🚀</span><span>智能路由（2 个 rsID 走 dbSNP，其余走 gnomAD）</span></div><div class="item"><span class="ic">⬇️</span><span>导出规范化查询词（CSV）</span></div></div>
+  <p class="caption"><b>选中一段 VCF → 右键</b>：批量注释，一条命令查完整个变异清单。</p>
+</div></body></html>

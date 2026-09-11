@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生信快查 · Bio Lookup — 选中基因名，右键直达 15+ 生信数据库</title>
+<meta name="description" content="Bio Lookup 浏览器扩展：选中基因名 / GEO 编号 / rsID / 变异位点 / PMID，右键一键跳转 NCBI、Ensembl、gnomAD、ClinVar 等 15+ 数据库；支持 VCF 批量注释、查询历史。Chrome / Edge 可用，开源免费。">
+<style>
+  :root{--bg:#0b1224;--card:rgba(255,255,255,.05);--border:rgba(230,241,255,.14);--text:#e6f1ff;--muted:rgba(226,232,255,.7);--teal:#64ffda;--violet:#a78bfa;--gold:#fbbf24}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1000px 520px at 84% -6%,rgba(124,58,237,.34),transparent 64%),radial-gradient(760px 440px at 2% 100%,rgba(100,255,218,.14),transparent 60%),var(--bg);color:var(--text);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;line-height:1.8;font-size:16px;padding:64px 22px 90px}
+  .wrap{max-width:1000px;margin:0 auto}
+  .top{display:flex;align-items:center;gap:18px;margin-bottom:22px}
+  .top img{width:78px;height:78px;border-radius:18px;box-shadow:0 14px 34px rgba(0,0,0,.45)}
+  .badge{display:inline-block;font-family:ui-monospace,Consolas,monospace;font-size:12px;letter-spacing:.08em;color:var(--teal);border:1px solid rgba(100,255,218,.35);background:rgba(100,255,218,.08);padding:4px 12px;border-radius:999px;margin-bottom:10px}
+  h1{font-size:clamp(28px,4.4vw,42px);line-height:1.24;font-weight:800}
+  h1 .hl{color:var(--teal);text-shadow:0 0 30px rgba(100,255,218,.35)}
+  .lead{color:var(--muted);font-size:17.5px;max-width:760px;margin:16px 0 26px}
+  .btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px}
+  a.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;transition:all .2s ease}
+  a.primary{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 10px 26px rgba(124,58,237,.36)}
+  a.primary:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(124,58,237,.5)}
+  a.ghost{border:1px solid var(--border);color:var(--text);background:rgba(255,255,255,.04)}
+  a.ghost:hover{background:rgba(255,255,255,.09)}
+  h2{font-size:22px;margin:44px 0 16px;padding-left:13px;border-left:3px solid var(--teal)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 22px}
+  .card b{display:block;font-size:16.5px;margin-bottom:8px}
+  .card p{color:var(--muted);font-size:14.5px}
+  .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-top:8px}
+  .shots img{width:100%;border-radius:14px;border:1px solid var(--border);box-shadow:0 14px 36px rgba(0,0,0,.4);display:block}
+  .shots figcaption{font-size:13px;color:var(--muted);margin-top:9px}
+  table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14.5px}
+  th,td{text-align:left;padding:10px;border-bottom:1px solid var(--border)}
+  th{color:var(--text);font-size:13px}
+  td{color:var(--muted)}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:13.5px;color:var(--teal);background:rgba(100,255,218,.1);padding:2px 7px;border-radius:6px}
+  ol,ul{padding-left:24px;color:var(--muted)}
+  li{margin:7px 0}
+  .privacy{background:linear-gradient(135deg,rgba(100,255,218,.09),rgba(167,139,250,.09));border:1px solid rgba(100,255,218,.24)}
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--border);font-size:13.5px;color:var(--muted)}
+  a{color:var(--teal)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <img src="icons/icon128.png" alt="生信快查图标">
+    <div>
+      <span class="badge">CHROME / EDGE · MANIFEST V3 · MIT</span>
+      <h1>生信快查 · <span class="hl">Bio Lookup</span></h1>
+    </div>
+  </div>
+  <p class="lead">选中基因名 / GEO 编号 / rsID / 变异位点 / PMID → 右键一键跳转 <b>15+ 生信数据库</b>。智能识别类型、VCF 批量注释、Zotero 联动、查询历史可导出——为生信与医学研究者做的浏览器扩展。</p>
+  <div class="btns">
+    <a class="btn primary" href="https://github.com/sushuqiong/bio-lookup-extension/releases/latest">⬇️ 下载最新版</a>
+    <a class="btn ghost" href="https://github.com/sushuqiong/bio-lookup-extension">📦 GitHub 仓库</a>
+    <a class="btn ghost" href="privacy.html">🔒 隐私政策</a>
+  </div>
+
+  <h2>为什么做这个</h2>
+  <p style="color:var(--muted)">一个基因名要在 NCBI Gene、Ensembl、GeneCards、UniProt、PubMed 之间反复开 5 个标签页；一个 rsID 要在 dbSNP、gnomAD、ClinVar、VarSome 之间来回跳。现有插件要么只支持基因，要么菜单塞满所有库。<b style="color:var(--text)">Bio Lookup 换了个思路：先识别你选中的是什么，再只给你看相关的库。</b></p>
+
+  <h2>核心能力</h2>
+  <div class="grid">
+    <div class="card"><b>🧬 9 类对象智能识别</b><p>基因 / GEO / rsID / 变异(HGVS·坐标·VCF) / 区间 / PMID / DOI / 核酸序列，靠正则引擎判别，菜单只列相关库。</p></div>
+    <div class="card"><b>🚀 一键全开比对查询</b><p>变异解读要同时看人群频率 + 致病性 + 原始记录——一次点击并行打开 5 个相关库的后台标签。</p></div>
+    <div class="card"><b>🧾 VCF 批量注释</b><p>选中一段 VCF → 按 CHROM/POS/REF/ALT 解析，坐标归一化为 gnomAD 标准格式，一条命令查完整个清单。</p></div>
+    <div class="card"><b>🕘 查询历史留痕</b><p>自动记录查询词/类型/库/时间，可搜索、筛选、重查，导出 CSV 用于方法学留档。</p></div>
+  </div>
+
+  <h2>界面</h2>
+  <div class="shots">
+    <figure><img src="store/shot1-context-menu.png" alt="右键菜单"><figcaption>选中基因名 → 右键：菜单按类型只列相关库</figcaption></figure>
+    <figure><img src="store/shot2-history.png" alt="历史面板"><figcaption>查询历史面板：可搜索、筛选、重查、导出</figcaption></figure>
+    <figure><img src="store/shot3-vcf.png" alt="VCF 批量"><figcaption>选中 VCF → 批量注释（含智能路由）</figcaption></figure>
+    <figure><img src="store/shot4-float.png" alt="页面浮层"><figcaption>双击选中文本 → 浮层卡片（可选功能）</figcaption></figure>
+  </div>
+
+  <h2>支持的数据库</h2>
+  <table>
+    <tr><th>类型</th><th>数据库</th></tr>
+    <tr><td>基因</td><td>NCBI Gene · Ensembl · GeneCards · UniProt · NCBI Protein · PubMed</td></tr>
+    <tr><td>SNP / 变异</td><td>dbSNP · ClinVar · gnomAD · VarSome · Franklin · UCSC</td></tr>
+    <tr><td>数据集</td><td>GEO · SRA Run Selector · ArrayExpress</td></tr>
+    <tr><td>文献</td><td>PubMed · Europe PMC · Google Scholar · Zotero（本机库）</td></tr>
+    <tr><td>序列</td><td>NCBI BLAST</td></tr>
+  </table>
+
+  <h2>安装</h2>
+  <ol>
+    <li>到 <a href="https://github.com/sushuqiong/bio-lookup-extension/releases/latest">Releases</a> 下载 zip 并解压</li>
+    <li>Chrome 打开 <code>chrome://extensions</code>；Edge 打开 <code>edge://extensions</code></li>
+    <li>开启「开发人员模式」→「加载已解压的扩展程序」→ 选择解压出的文件夹</li>
+  </ol>
+  <p style="color:var(--muted);font-size:14.5px">商店版本上架后可一键安装、自动更新。</p>
+
+  <h2>隐私</h2>
+  <div class="card privacy">
+    <b>🔒 不收集任何数据</b>
+    <p>核心功能只需右键菜单与本地存储权限，<b>默认不读取任何网页内容</b>；页面浮层与 Zotero 联动均为可选，开启时才申请权限。所有历史与配置只存在你的浏览器本地，无服务器、无遥测、无追踪代码。<a href="privacy.html">查看完整隐私政策 →</a></p>
+  </div>
+
+  <footer>
+    © 2026 sushuqiong · MIT License · <a href="https://github.com/sushuqiong/bio-lookup-extension">GitHub</a> · <a href="privacy.html">隐私政策</a><br>
+    本页同时作为扩展商店上架所需的项目主页与隐私政策入口。
+  </footer>
+</div>
+</body>
+</html>

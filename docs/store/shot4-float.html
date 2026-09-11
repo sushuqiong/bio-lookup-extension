@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#fff;color:#1f2937;overflow:hidden}
+.page{width:1280px;height:800px;padding:46px 60px;position:relative;background:linear-gradient(180deg,#f8fafc,#fff)}
+.paper-title{font-size:30px;font-weight:800;color:#0f172a;line-height:1.35;margin-bottom:10px}
+.paper-meta{font-size:13.5px;color:#64748b;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #e2e8f0}
+.paper-text{font-size:16.5px;line-height:2.05;color:#334155;max-width:860px}
+.paper-text p{margin-bottom:16px}
+.sel{background:rgba(100,255,218,.28);border-bottom:2px solid #0d9488;padding:1px 2px;font-weight:600;color:#0f172a}
+.sel2{background:rgba(167,139,250,.26);border-bottom:2px solid #7c3aed;padding:1px 2px;font-weight:600;color:#0f172a}
+.vcf{font-family:ui-monospace,Consolas,monospace;font-size:14.5px;line-height:1.85;background:#0f172a;color:#e2e8f0;padding:20px 22px;border-radius:12px;margin:18px 0;white-space:pre}
+.vcf .hl{background:rgba(100,255,218,.22);color:#64ffda;border-radius:3px;padding:0 2px}
+.caption{position:absolute;left:60px;bottom:34px;font-size:14px;color:#64748b}
+.caption b{color:#0f172a}
+/* 右键菜单（模拟 Chromium 菜单外观） */
+.menu{position:absolute;width:296px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;
+box-shadow:0 14px 40px rgba(15,23,42,.22),0 2px 8px rgba(15,23,42,.10);padding:6px;font-size:13.5px;z-index:9}
+.menu-title{font-size:12px;color:#7c3aed;font-weight:700;padding:8px 10px 6px;border-bottom:1px solid #f1f5f9;margin-bottom:4px;display:flex;gap:6px;align-items:center}
+.menu-title .q{font-family:ui-monospace,Consolas,monospace;color:#0f172a;font-weight:600}
+.item{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;color:#1e293b}
+.item .ic{width:18px;text-align:center;font-size:14px}
+.item.hover{background:#ede9fe;color:#5b21b6;font-weight:600}
+.item .arrow{margin-left:auto;color:#94a3b8;font-size:11px}
+.sep{height:1px;background:#e9eef5;margin:5px 6px}
+.tag{display:inline-block;font-family:ui-monospace,Consolas,monospace;font-size:10.5px;background:#f1f5f9;color:#475569;border-radius:999px;padding:2px 8px;margin-left:auto}
+
+.card{position:absolute;width:322px;background:linear-gradient(150deg,rgba(16,27,69,.985),rgba(24,36,86,.985));
+border:1px solid rgba(100,255,218,.3);border-radius:15px;padding:13px 15px;box-shadow:0 22px 55px rgba(7,13,31,.45);color:#e6f1ff}
+.card .h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.card .t{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px}
+.card .t .q{font-family:ui-monospace,Consolas,monospace;color:#64ffda;font-size:12px}
+.card .x{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.09);color:rgba(230,241,255,.7);font-size:11px;display:flex;align-items:center;justify-content:center}
+.card .chips{display:flex;flex-wrap:wrap;gap:6px}
+.card .chip{font-size:11.5px;padding:5px 10px;border-radius:999px;border:1px solid rgba(167,139,250,.35);background:rgba(167,139,250,.13);color:#c4b5fd}
+.card .chip.on{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border-color:transparent}
+.card .r{display:flex;gap:8px;margin-top:11px;padding-top:10px;border-top:1px solid rgba(230,241,255,.11)}
+.card .all{flex:1;padding:7px 10px;border-radius:9px;border:1px solid rgba(100,255,218,.32);background:rgba(100,255,218,.09);color:#64ffda;font-size:11.5px;font-weight:700;text-align:center}
+.card .cp{padding:7px 12px;border-radius:9px;border:1px solid rgba(230,241,255,.15);color:rgba(230,241,255,.72);font-size:11.5px}
+.card .hh{margin-top:8px;font-size:10px;color:rgba(226,232,255,.45);text-align:right}
+.cursor{position:absolute;width:18px;height:26px}
+</style></head><body>
+<div class="page">
+  <h1 class="paper-title">讨论：变异位点的临床解读</h1>
+  <p class="paper-meta">Discussion · 双击选中文本弹浮层</p>
+  <div class="paper-text">
+    <p>在本研究中，我们重点关注了 <span class="sel">rs80357906</span> 这一位点。该变异位于 BRCA1 基因的编码区，在人群频率数据库中极为罕见，提示其可能具有功能影响。</p>
+    <p>结合临床表型与家系信息，我们建议对该位点进行进一步的致病性评估，并在临床报告中明确标注其人群频率与致病性评级来源。</p>
+    <p>为提高可重复性，所有位点的查询过程与所用数据库都已在补充材料中完整记录。</p>
+  </div>
+  <div class="card" style="top:196px;left:560px">
+    <div class="h"><span class="t">🔎 SNP (rsID)<span class="q">rs80357906</span></span><span class="x">✕</span></div>
+    <div class="chips"><span class="chip on">🔎 dbSNP</span><span class="chip">🏥 ClinVar</span><span class="chip">🌍 gnomAD</span><span class="chip">🧪 VarSome</span><span class="chip">🧠 Franklin</span></div>
+    <div class="r"><span class="all">🚀 全开（5 个）</span><span class="cp">复制</span></div>
+    <div class="hh">生信快查 · 双击选中文本可再次唤起</div>
+  </div>
+  <p class="caption"><b>双击选中文本</b>：鼠标旁直接弹出查询卡片，无需右键（可选功能，需一次性授权）。</p>
+</div></body></html>

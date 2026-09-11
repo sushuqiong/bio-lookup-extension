@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1280px;height:800px;background:#0b1224;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;gap:56px;color:#e6f1ff}
+.col{display:flex;flex-direction:column;gap:22px}
+.headline{font-size:26px;font-weight:800;line-height:1.4}
+.headline span{color:#64ffda}
+.sub{font-size:14.5px;color:rgba(226,232,255,.62);line-height:1.9;max-width:380px}
+.feats{list-style:none;font-size:14px;color:rgba(226,232,255,.8);line-height:2.1}
+.feats li::before{content:"✓ ";color:#64ffda;font-weight:800}
+.phone{width:430px;background:linear-gradient(170deg,#101c45,#141f4d);border:1px solid rgba(230,241,255,.14);border-radius:20px;box-shadow:0 30px 70px rgba(0,0,0,.5);overflow:hidden}
+.phead{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 12px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{font-size:24px}
+.brand b{display:block;font-size:15px}
+.brand i{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;color:rgba(226,232,255,.55);font-style:normal;letter-spacing:.08em}
+.cnt{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;font-weight:700;color:#64ffda;background:rgba(100,255,218,.1);border:1px solid rgba(100,255,218,.3);border-radius:999px;padding:3px 11px}
+.tabs{display:flex;gap:6px;padding:0 18px 12px}
+.tab{flex:1;text-align:center;padding:8px;border-radius:10px;font-size:12px;font-weight:600;border:1px solid rgba(230,241,255,.14);color:rgba(226,232,255,.6)}
+.tab.on{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(124,58,237,.35)}
+.qbox{padding:2px 18px 12px}
+.qrow{display:flex;gap:8px}
+.qrow input{flex:1;padding:11px 13px;border-radius:11px;border:1px solid rgba(230,241,255,.16);background:rgba(255,255,255,.06);color:#64ffda;font-family:ui-monospace,Consolas,monospace;font-size:13.5px}
+.qrow button{padding:0 18px;border-radius:11px;border:none;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-size:13px;font-weight:700}
+.hint{font-size:10.5px;color:rgba(226,232,255,.55);margin:7px 2px 0;font-family:ui-monospace,Consolas,monospace}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chip{font-size:11px;padding:4px 11px;border-radius:999px;border:1px solid rgba(167,139,250,.35);background:rgba(167,139,250,.12);color:#c4b5fd}
+.chip.on{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border-color:transparent}
+.tools{display:flex;gap:8px;padding:0 18px 10px}
+.tools input,.tools select{flex:1;padding:8px 11px;border-radius:9px;border:1px solid rgba(230,241,255,.14);background:rgba(255,255,255,.05);color:rgba(226,232,255,.75);font-size:12px}
+.tools select{flex:0 0 118px}
+.list{padding:0 10px}
+.it{display:flex;align-items:center;gap:11px;padding:10px 10px;border-radius:11px}
+.it:hover{background:rgba(255,255,255,.06)}
+.it .e{font-size:16px}
+.it .b{flex:1;min-width:0}
+.it .q{font-family:ui-monospace,Consolas,monospace;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it .m{display:flex;gap:9px;font-size:10.5px;color:rgba(226,232,255,.55);margin-top:3px}
+.it .m .db{color:#64ffda;font-weight:600}
+.copy{font-size:11px;padding:4px 9px;border-radius:7px;border:1px solid rgba(230,241,255,.14);color:rgba(226,232,255,.6);background:transparent}
+.foot{display:flex;gap:8px;padding:12px 18px 16px;border-top:1px solid rgba(230,241,255,.12);margin-top:8px}
+.foot button{flex:1;padding:9px;border-radius:10px;border:1px solid rgba(230,241,255,.14);background:rgba(255,255,255,.05);color:#e6f1ff;font-size:12px}
+</style></head><body>
+<div class="col">
+  <h1 class="headline">查询历史<br><span>自动留痕 · 可检索 · 可导出</span></h1>
+  <p class="sub">每次查询自动记录识别类型、目标数据库与时间。支持关键词搜索、按类型筛选、点击重查，并导出 CSV 用于方法学留档。</p>
+  <ul class="feats">
+    <li>9 类对象智能识别</li>
+    <li>动态右键菜单（只列相关库）</li>
+    <li>VCF 批量注释 + 智能路由</li>
+    <li>一键全开多个数据库</li>
+    <li>自定义数据库（{q} 模板）</li>
+    <li>Zotero 联动</li>
+  </ul>
+</div>
+<div class="phone">
+  <div class="phead"><div class="brand"><span class="logo">🧬</span><div><b>生信快查</b><i>BIO LOOKUP · v0.3.1</i></div></div><span class="cnt">6</span></div>
+  <div class="tabs"><div class="tab on">🕘 查询历史</div><div class="tab">📚 批量查询</div></div>
+  <div class="qbox">
+    <div class="qrow"><input value="rs80357906"><button>查询</button></div>
+    <p class="hint">🔎 识别为：SNP (rsID)</p>
+    <div class="chips"><span class="chip on">🔎 dbSNP</span><span class="chip">🏥 ClinVar</span><span class="chip">🌍 gnomAD</span><span class="chip">🧪 VarSome</span><span class="chip">🧠 Franklin</span></div>
+  </div>
+  <div class="tools"><input placeholder="筛选历史…"><select><option>全部类型</option></select></div>
+  <div class="list"><div class="it"><span class="e">🔎</span><div class="b"><div class="q">rs80357906</div>
+<div class="m"><span class="db">dbSNP</span><span>SNP (rsID)</span><span>2 分钟前</span></div></div><span class="copy">复制</span></div><div class="it"><span class="e">🧬</span><div class="b"><div class="q">BRCA1</div>
+<div class="m"><span class="db">NCBI Gene</span><span>基因</span><span>5 分钟前</span></div></div><span class="copy">复制</span></div><div class="it"><span class="e">🌍</span><div class="b"><div class="q">chr17:7676154 C>T</div>
+<div class="m"><span class="db">gnomAD</span><span>变异 (坐标)</span><span>12 分钟前</span></div></div><span class="copy">复制</span></div><div class="it"><span class="e">🧾</span><div class="b"><div class="q">17-7676154-C-T</div>
+<div class="m"><span class="db">ClinVar</span><span>VCF 记录</span><span>18 分钟前</span></div></div><span class="copy">复制</span></div><div class="it"><span class="e">📦</span><div class="b"><div class="q">GSE123456</div>
+<div class="m"><span class="db">GEO 数据集</span><span>GEO 数据集</span><span>28 分钟前</span></div></div><span class="copy">复制</span></div><div class="it"><span class="e">📚</span><div class="b"><div class="q">PMID: 12345678</div>
+<div class="m"><span class="db">PubMed</span><span>文献 (PMID)</span><span>1 小时前</span></div></div><span class="copy">复制</span></div></div>
+  <div class="foot"><button>⬇️ 导出 CSV</button><button>🗑️ 清空历史</button></div>
+</div>
+</body></html>

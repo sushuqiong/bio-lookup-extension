@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>隐私政策 · 生信快查 Bio Lookup</title>
+<meta name="description" content="生信快查（Bio Lookup）浏览器扩展隐私政策：不收集任何个人数据，所有数据仅保存在你的本地浏览器。">
+<style>
+  :root { --bg:#0d1730; --card:rgba(255,255,255,.05); --border:rgba(230,241,255,.14); --text:#e6f1ff; --muted:rgba(226,232,255,.68); --teal:#64ffda; --violet:#a78bfa; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background: radial-gradient(900px 500px at 80% -10%, rgba(124,58,237,.28), transparent 65%),
+                radial-gradient(700px 400px at 0% 100%, rgba(100,255,218,.10), transparent 60%), var(--bg);
+    color: var(--text);
+    font-family: "PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    line-height: 1.85; font-size: 15.5px;
+    padding: 56px 22px 90px;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; }
+  .badge { display:inline-block; font-family:ui-monospace,Consolas,monospace; font-size:12px; letter-spacing:.08em; color:var(--teal); border:1px solid rgba(100,255,218,.35); background:rgba(100,255,218,.08); padding:5px 13px; border-radius:999px; margin-bottom:20px; }
+  h1 { font-size: 30px; line-height:1.3; margin-bottom: 10px; text-shadow: 0 0 28px rgba(100,255,218,.28); }
+  h2 { font-size: 18.5px; margin: 34px 0 12px; padding-left: 12px; border-left: 3px solid var(--teal); }
+  p, li { color: var(--muted); }
+  ul { padding-left: 22px; margin: 10px 0; }
+  li { margin: 6px 0; }
+  strong, b { color: var(--text); }
+  a { color: var(--teal); }
+  code { font-family: ui-monospace,Consolas,monospace; font-size: 13px; color: var(--teal); background: rgba(100,255,218,.1); padding: 2px 7px; border-radius: 6px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 22px 24px; margin: 22px 0; }
+  .hl { color: var(--teal); font-weight: 700; }
+  table { width:100%; border-collapse: collapse; margin: 14px 0; font-size: 14.5px; }
+  th, td { text-align:left; padding: 10px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--text); font-size: 13px; letter-spacing:.03em; }
+  footer { margin-top: 46px; padding-top: 22px; border-top: 1px solid var(--border); font-size: 13.5px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">PRIVACY POLICY · v0.3.1</span>
+  <h1>隐私政策 · 生信快查 Bio Lookup</h1>
+  <p>最后更新：2026 年 9 月</p>
+
+  <div class="card">
+    <p><strong>一句话总结：<span class="hl">本扩展不收集、不传输、不出售任何个人数据。</span></strong></p>
+    <p>所有产生的数据（查询历史、自定义数据库配置）只保存在你自己的浏览器本地存储中，开发者无法访问。扩展本身不包含任何分析、追踪或遥测代码。</p>
+  </div>
+
+  <h2>1. 我们收集什么</h2>
+  <p><b>什么都不收集。</b>具体来说：</p>
+  <ul>
+    <li>不收集浏览历史、访问过的网页或 URL</li>
+    <li>不收集你在网页上选中的文本内容</li>
+    <li>不收集个人身份信息（姓名、邮箱、账号、位置等）</li>
+    <li>不使用 Cookie 进行追踪，不接入任何第三方统计 SDK</li>
+    <li>无账号体系，无需注册或登录</li>
+  </ul>
+
+  <h2>2. 数据存在哪里</h2>
+  <table>
+    <tr><th>数据类型</th><th>存储位置</th><th>是否上传</th></tr>
+    <tr><td>查询历史（查询词/类型/时间）</td><td>浏览器 <code>chrome.storage.local</code></td><td>否</td></tr>
+    <tr><td>自定义数据库配置</td><td>浏览器 <code>chrome.storage.local</code></td><td>否</td></tr>
+    <tr><td>功能开关（浮层 / Zotero 联动）</td><td>浏览器 <code>chrome.storage.local</code></td><td>否</td></tr>
+  </table>
+  <p>这些数据仅存于你的设备。卸载扩展时，浏览器会自动清除它们。你可随时在扩展面板中「清空历史」或删除全部数据。</p>
+
+  <h2>3. 何时会发生网络请求</h2>
+  <p>扩展只在<b>你主动点击</b>某个数据库菜单项时，打开该数据库的网页（例如 <code>pubmed.ncbi.nlm.nih.gov</code>）。这意味着：</p>
+  <ul>
+    <li>请求由<b>你的浏览器</b>直接发往目标数据库，扩展不经过任何中间服务器</li>
+    <li>扩展自身<b>没有后端服务</b>，开发者收不到任何数据</li>
+    <li>目标网站的数据处理遵循其各自的隐私政策（如 NCBI、Ensembl、gnomAD 等）</li>
+  </ul>
+
+  <h2>4. 可选功能与权限说明</h2>
+  <p>本扩展坚持<b>权限最小化</b>：核心功能只需右键菜单与本地存储权限。</p>
+  <table>
+    <tr><th>权限</th><th>用途</th><th>是否需要授权</th></tr>
+    <tr><td>contextMenus</td><td>显示右键查询菜单</td><td>安装即需（核心功能）</td></tr>
+    <tr><td>storage</td><td>本地保存查询历史与配置</td><td>安装即需（核心功能）</td></tr>
+    <tr><td>scripting</td><td>注册/注销「页面浮层」脚本</td><td>仅浮层功能</td></tr>
+    <tr><td>downloads</td><td>导出 VCF 规范化查询词 CSV</td><td>导出功能</td></tr>
+    <tr><td>http/https 网页访问（可选）</td><td>在你<b>主动开启</b>「页面浮层」后，用于在网页上显示查询卡片</td><td><span class="hl">默认不申请</span>，开启时弹窗询问；关闭开关即撤销</td></tr>
+    <tr><td>127.0.0.1:23119（可选）</td><td>在你<b>主动开启</b>「Zotero 联动」后，仅访问你本机运行的 Zotero API</td><td><span class="hl">默认不申请</span>，开启时弹窗询问；关闭开关即撤销</td></tr>
+  </table>
+  <p><b>特别说明：</b>扩展默认<b>不读取任何网页内容</b>。只有在你自己打开「页面浮层」并授权后，才会在你双击选中文本时读取该选中文本，用于判断类型并在本机显示查询卡片——该文本不会被发送到任何服务器。</p>
+
+  <h2>5. 数据共享与出售</h2>
+  <p><b>不共享、不出售、不转让</b>任何数据给第三方。不存在"为广告目的使用数据"的情形。</p>
+
+  <h2>6. 儿童隐私</h2>
+  <p>本扩展面向科研人员使用，不针对儿童设计，也不会有意收集儿童信息（事实上不收集任何人的信息）。</p>
+
+  <h2>7. 开源可验证</h2>
+  <p>本扩展完全开源，上述声明均可通过阅读代码自行验证：<br>
+  <a href="https://github.com/sushuqiong/bio-lookup-extension">github.com/sushuqiong/bio-lookup-extension</a></p>
+
+  <h2>8. 政策变更</h2>
+  <p>若本政策有更新，我们会修改本页面并同步更新仓库中的 <code>PRIVACY.md</code>。重大变更会在仓库 Release Notes 中说明。</p>
+
+  <h2>9. 联系我们</h2>
+  <p>如对本隐私政策有疑问，请在 GitHub 仓库提交 Issue：<br>
+  <a href="https://github.com/sushuqiong/bio-lookup-extension/issues">github.com/sushuqiong/bio-lookup-extension/issues</a></p>
+
+  <footer>
+    © 2026 sushuqiong · 生信快查 Bio Lookup · MIT License<br>
+    本页为浏览器扩展上架所需的隐私政策页面，同时适用于 Chrome Web Store 与 Microsoft Edge Add-ons。
+  </footer>
+</div>
+</body>
+</html>
