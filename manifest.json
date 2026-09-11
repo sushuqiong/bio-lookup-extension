@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "生信快查 · Bio Lookup",
+  "version": "0.1.0",
+  "description": "选中基因名 / GEO 编号 / 变异位点 / rsID / PMID，右键一键跳转 NCBI、Ensembl、gnomAD、ClinVar 等 15+ 生信数据库，并保存查询历史。",
+  "author": "sushuqiong",
+  "homepage_url": "https://github.com/sushuqiong/bio-lookup-extension",
+  "minimum_chrome_version": "102",
+  "permissions": ["contextMenus", "storage"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "生信快查 · 查询历史",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
