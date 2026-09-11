@@ -4,8 +4,6 @@
 
 Chrome / Edge 浏览器扩展（Manifest V3），零依赖、零构建、零追踪。
 
-![预览](docs/preview.png)
-
 ## ✨ 为什么做这个
 
 做生信和医学研究时，一个基因名要在 NCBI Gene、Ensembl、GeneCards、UniProt、PubMed 之间反复开 5 个标签页；一个 rsID 要在 dbSNP、gnomAD、ClinVar、VarSome 之间来回跳。
