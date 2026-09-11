@@ -231,6 +231,178 @@
     })
   }
 
+  /* ══════════════════════════════════════════════════════════════
+     v0.6.0：页面自动高亮 —— 网页里的基因名 / rsID / 数据集编号自动标记，
+     点击即弹查询卡（需在设置页开启，默认关闭）
+     ══════════════════════════════════════════════════════════════ */
+  const HL_CLASS = "biolookup-hl"
+  const HL_MAX = 150
+  let hlDone = false
+  let hlEnabled = false
+
+  const HL_STYLE = `
+    .${HL_CLASS} {
+      background: linear-gradient(180deg, transparent 60%, rgba(134, 239, 172, 0.7) 60%);
+      border-bottom: 1.5px solid rgba(22, 163, 74, 0.7);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .${HL_CLASS}:hover { background: rgba(187, 247, 208, 0.95); }
+  `
+
+  function escReLocal(s) {
+    return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  }
+
+  function buildHighlightRe(terms) {
+    // 高置信目标：rsID / GEO·SRA 编号 / 坐标变异 / 已知基因（严格词边界）
+    const genes = terms
+      .filter((t) => /^[A-Za-z0-9-]{2,}$/.test(t))
+      .sort((a, b) => b.length - a.length)
+      .map(escReLocal)
+      .join("|")
+    return new RegExp(
+      `(rs\\s?\\d{4,}|(?:GSE|GSM|GDS|GPL)\\s?\\d{3,}|(?:chr)?\\d{1,2}:\\d{2,}\\s?[ACGT]>[ACGT]|(?<![A-Za-z0-9_-])(?:${genes})(?![A-Za-z0-9_-]))`,
+      "g",
+    )
+  }
+
+  function injectHlStyle() {
+    if (document.getElementById("biolookup-hl-style")) return
+    const st = document.createElement("style")
+    st.id = "biolookup-hl-style"
+    st.textContent = HL_STYLE
+    document.documentElement.appendChild(st)
+  }
+
+  function highlightPage(terms) {
+    if (hlDone || !document.body) return
+    const re = buildHighlightRe(terms)
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const v = node.nodeValue
+        if (!v || v.length < 2 || v.length > 3000) return NodeFilter.FILTER_REJECT
+        const p = node.parentElement
+        if (!p) return NodeFilter.FILTER_REJECT
+        const tag = p.tagName
+        if (["SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA", "INPUT", "SELECT", "CODE", "PRE", "A"].includes(tag)) return NodeFilter.FILTER_REJECT
+        if (p.closest(`.${HL_CLASS}, #${HOST_ID}`)) return NodeFilter.FILTER_REJECT
+        if (p.isContentEditable) return NodeFilter.FILTER_REJECT
+        return NodeFilter.FILTER_ACCEPT
+      },
+    })
+
+    const targets = []
+    let node
+    while ((node = walker.nextNode())) {
+      if (targets.length >= HL_MAX) break
+      re.lastIndex = 0
+      if (re.test(node.nodeValue)) targets.push(node)
+    }
+
+    for (const textNode of targets) {
+      try {
+        const frag = document.createDocumentFragment()
+        const parent = textNode.parentNode
+        if (!parent) continue
+        let last = 0
+        const text = textNode.nodeValue
+        re.lastIndex = 0
+        let m
+        while ((m = re.exec(text))) {
+          if (m[0].length === 0) break
+          if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)))
+          const span = document.createElement("span")
+          span.className = HL_CLASS
+          span.textContent = m[0]
+          span.dataset.biolookup = "1"
+          frag.appendChild(span)
+          last = m.index + m[0].length
+        }
+        if (last === 0) continue
+        if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)))
+        parent.replaceChild(frag, textNode)
+      } catch (err) {
+        /* 单个节点失败不影响整体 */
+      }
+    }
+    hlDone = true
+  }
+
+  function clearHighlight() {
+    document.querySelectorAll(`.${HL_CLASS}`).forEach((el) => {
+      const p = el.parentNode
+      if (!p) return
+      p.replaceChild(document.createTextNode(el.textContent), el)
+      p.normalize()
+    })
+    hlDone = false
+  }
+
+  async function initHighlight() {
+    try {
+      const st = await chrome.runtime.sendMessage({ type: "highlightStatus" })
+      if (!st || !st.ok || !st.enabled || !st.granted) return
+      hlEnabled = true
+      injectHlStyle()
+      const res = await chrome.runtime.sendMessage({ type: "getHighlightTerms" })
+      if (res && res.ok && Array.isArray(res.terms)) {
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", () => highlightPage(res.terms), { once: true })
+        } else {
+          highlightPage(res.terms)
+        }
+      }
+    } catch (err) {
+      /* 扩展未就绪时静默 */
+    }
+  }
+
+  // 点击高亮词 → 弹查询卡
+  document.addEventListener(
+    "click",
+    (e) => {
+      if (!hlEnabled) return
+      const el = e.target && e.target.closest ? e.target.closest(`.${HL_CLASS}`) : null
+      if (!el) return
+      e.preventDefault()
+      e.stopPropagation()
+      const q = el.textContent.trim()
+      try {
+        chrome.runtime.sendMessage({ type: "classify", text: q }, (res) => {
+          if (chrome.runtime.lastError) return
+          if (!res || !res.ok || !res.data) return
+          const r = el.getBoundingClientRect()
+          show(r.left, r.bottom + 4, res.data)
+        })
+      } catch (err) {
+        /* ignore */
+      }
+    },
+    true,
+  )
+
+  // 设置页切换开关时实时生效（无需刷新页面）
+  try {
+    chrome.storage.onChanged.addListener(async (changes) => {
+      if (!changes.highlightEnabled) return
+      if (changes.highlightEnabled.newValue) {
+        hlEnabled = true
+        injectHlStyle()
+        const res = await chrome.runtime.sendMessage({ type: "getHighlightTerms" }).catch(() => null)
+        if (res && res.ok) highlightPage(res.terms)
+      } else {
+        hlEnabled = false
+        clearHighlight()
+      }
+    })
+  } catch (err) {
+    /* ignore */
+  }
+
+  initHighlight()
+
   document.addEventListener(
     "dblclick",
     (e) => {

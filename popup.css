@@ -218,6 +218,21 @@ body {
   transition: color 0.25s ease;
 }
 
+/* ── 扫描本页 ── */
+.scan-row { display: flex; align-items: center; gap: 9px; margin-top: 9px; }
+
+.btn.scan {
+  flex-shrink: 0;
+  border-color: transparent;
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.14), rgba(190, 242, 100, 0.34));
+  color: #15803d;
+  font-weight: 700;
+  border: 1px solid rgba(21, 128, 61, 0.3);
+}
+.btn.scan:hover { background: linear-gradient(135deg, #16a34a, #65a30d); color: #fff; border-color: transparent; }
+.btn.scan:disabled { opacity: 0.6; cursor: default; transform: none; }
+.scan-hint { font-size: 10.5px; color: var(--muted); line-height: 1.5; }
+
 /* ── 类型色（浅色底上自动压暗，保证可读性） ── */
 body { --tc: #15803d; --tc-soft: rgba(21, 128, 61, 0.16); }
 

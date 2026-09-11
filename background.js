@@ -15,6 +15,9 @@ import {
   TYPE_COLORS,
   lookupGene,
   analyzeSequence,
+  extractEntities,
+  GENE_INFO,
+  GENE_ALIAS,
 } from "./classify.js"
 
 const ROOT = "biolookup-root"
@@ -395,6 +398,44 @@ chrome.runtime?.onMessage?.addListener((msg, sender, sendResponse) => {
         sendResponse({ ok: true })
         return
       }
+      // v0.6.0：扫描当前页面，提取基因 / rsID / 变异 / PMID / 数据集编号
+      if (msg?.type === "scanPage") {
+        let tab = null
+        try {
+          const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+          tab = tabs && tabs[0]
+        } catch (e) {
+          tab = null
+        }
+        if (!tab || !tab.id) return sendResponse({ ok: false, error: "无法获取当前标签页" })
+        const injected = await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: () => (document.body ? String(document.body.innerText).slice(0, 300000) : ""),
+        })
+        const text = (injected && injected[0] && injected[0].result) || ""
+        if (!text) return sendResponse({ ok: false, error: "当前页面没有可扫描的文本" })
+        const items = extractEntities(text, 60)
+        sendResponse({ ok: true, items, url: tab.url || "", title: tab.title || "" })
+        return
+      }
+      // v0.6.0：页面自动高亮开关（复用浮层的网页访问授权）
+      if (msg?.type === "setHighlight") {
+        await chrome.storage.local.set({ highlightEnabled: !!msg.enabled })
+        const ok = await syncFloatScript()
+        sendResponse({ ok })
+        return
+      }
+      if (msg?.type === "highlightStatus") {
+        const { highlightEnabled = false } = await chrome.storage.local.get("highlightEnabled")
+        const granted = await chrome.permissions.contains({ origins: FLOAT_MATCHES })
+        sendResponse({ ok: true, enabled: highlightEnabled, granted })
+        return
+      }
+      // v0.6.0：供 content.js 取高亮词表（基因表 + 别名）
+      if (msg?.type === "getHighlightTerms") {
+        sendResponse({ ok: true, terms: Object.keys(GENE_INFO).concat(Object.keys(GENE_ALIAS)) })
+        return
+      }
       if (msg?.type === "setFloat") {
         await chrome.storage.local.set({ floatEnabled: !!msg.enabled })
         const ok = await syncFloatScript()
@@ -415,14 +456,15 @@ chrome.runtime?.onMessage?.addListener((msg, sender, sendResponse) => {
   return true
 })
 
-/* ── 页面浮层注册 ── */
+/* ── 页面脚本注册（浮层 + 高亮共用同一个 content.js） ── */
 async function syncFloatScript() {
-  const { floatEnabled = false } = await chrome.storage.local.get("floatEnabled")
+  const { floatEnabled = false, highlightEnabled = false } = await chrome.storage.local.get(["floatEnabled", "highlightEnabled"])
+  const need = floatEnabled || highlightEnabled
   const granted = await chrome.permissions.contains({ origins: FLOAT_MATCHES })
   const registered = await chrome.scripting.getRegisteredContentScripts().catch(() => [])
   const has = registered.some((s) => s.id === FLOAT_SCRIPT_ID)
 
-  if (floatEnabled && granted && !has) {
+  if (need && granted && !has) {
     await chrome.scripting.registerContentScripts([
       { id: FLOAT_SCRIPT_ID, matches: FLOAT_MATCHES, js: ["content.js"], runAt: "document_idle", allFrames: false },
     ])
@@ -438,11 +480,11 @@ async function syncFloatScript() {
     }
     return true
   }
-  if ((!floatEnabled || !granted) && has) {
+  if ((!need || !granted) && has) {
     await chrome.scripting.unregisterContentScripts({ ids: [FLOAT_SCRIPT_ID] })
     return false
   }
-  return floatEnabled && granted
+  return need && granted
 }
 
 /* ── 历史与徽章 ── */

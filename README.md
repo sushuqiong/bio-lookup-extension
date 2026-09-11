@@ -1,8 +1,35 @@
 # 生信快查 · Bio Lookup
 
+[**中文**](README.md) | [English](README.en.md)
+
+![release](https://img.shields.io/github/v/release/sushuqiong/bio-lookup-extension?color=16a34a)
+![license](https://img.shields.io/github/license/sushuqiong/bio-lookup-extension?color=16a34a)
+![manifest](https://img.shields.io/badge/Manifest-V3-16a34a)
+![tests](https://img.shields.io/badge/tests-146%20passing-16a34a)
+![size](https://img.shields.io/badge/package-56%20KB-16a34a)
+
 > 选中基因名 / GEO 编号 / 变异位点 / rsID / PMID，**右键一键跳转 15+ 生信数据库**——智能识别类型、**内置 98 个肿瘤相关基因速查表**、VCF 批量注释、**序列工具**、Zotero 联动、页面浮层、批量查询、自定义数据库、**查询统计**与历史导出。
 
 Chrome / Edge 浏览器扩展（Manifest V3）· 零依赖零构建 · **明亮自然山水主题** · 默认不读网页 · 无追踪
+
+## ⬇️ 下载安装（30 秒，无需编译、无需 Node）
+
+1. **下载**：[点这里下载最新版 zip](https://github.com/sushuqiong/bio-lookup-extension/releases/latest) （文件名 `bio-lookup-extension-vX.Y.Z.zip`）
+2. **解压**到任意文件夹
+3. 打开浏览器的扩展页：
+   - Microsoft Edge → 地址栏输入 `edge://extensions`
+   - Google Chrome → 地址栏输入 `chrome://extensions`
+4. 打开「**开发人员模式**」（Edge 在左侧栏最底部；Chrome 在右上角）
+5. 点「**加载解压缩的扩展程序**」→ 选中第 2 步**解压出来的文件夹**（不是 zip）
+
+> 要求：桌面版 Chrome / Edge **116 或更高版本**。
+
+**装好后测一下**：随便打开一个网页 → 选中 `BRCA1` → 右键 → 应看到「生信快查 · 🧬 基因「BRCA1」」。
+
+### 更新到新版本
+下载新 zip 解压覆盖原文件夹 → 回到扩展页点该扩展的**刷新**图标 🔄 即可。
+
+
 
 | 智能识别 + 基因速查 | 右键菜单 | VCF 批量注释 |
 |---|---|---|
@@ -16,6 +43,23 @@ Chrome / Edge 浏览器扩展（Manifest V3）· 零依赖零构建 · **明亮�
 > 更多界面图见 `docs/store/`（右键菜单 / 历史面板 / VCF 批量 / 页面浮层 / 基因速查 / 统计看板）
 
 ---
+
+## 🆕 v0.6.0 新功能
+
+### 🔍 扫描本页（借鉴 Zotero Connector 的"抓取页面"）
+点面板里的 **「🔍 扫描本页」**，一键提取当前网页里所有 **基因 / rsID / 变异 / GEO 编号 / PMID / DOI**，
+自动去重计数后填入批量面板——读论文时不用再一个个复制粘贴，一次把整页的基因查完。
+
+> 使用 `activeTab` 权限：**只在你点击按钮时**读取当前页，平时完全不碰网页内容。
+
+### 🖍️ 网页基因自动高亮（可选，默认关闭）
+开启后，网页里出现的**已知基因名 / rsID / 数据集编号**会自动加绿色下划线标记，
+**点一下即弹出查询卡片**。只标记本地词表内的高置信目标（113 个词条 + 编号格式），单页上限 150 处，
+且**点击即查、不联网**。设置页可随时开关，切换后无需刷新页面。
+
+### 🌏 国际化与社区规范
+- 新增 **英文 README**（`README.en.md`）与 **CHANGELOG**（完整版本记录）
+- 新增 **GitHub Issue 模板**（Bug 报告会引导你填浏览器版本 + 错误信息，定位更快）
 
 ## 🆕 v0.5.0 稳定性修复 + 明亮自然主题
 
@@ -170,7 +214,7 @@ Bio Lookup 的四个差异点：
 
 | 功能 | 说明 |
 |---|---|
-| 🔍 智能类型识别 | 9 类对象正则判别，**101 项自动化测试**（识别引擎 67 + 数据层 26 + 后台降级场景 8，全部可离线运行） |
+| 🔍 智能类型识别 | 9 类对象正则判别，**146 项自动化测试**（识别引擎 67 + 数据层 26 + 扫描/高亮 21 + 后台模拟 32，全部可离线运行） |
 | 🖱️ 动态右键菜单 | 菜单标题显示识别结果（如「🧬 基因「BRCA1」」），只列相关库 |
 | 🚀 一键全开 | 单次查询并行打开 5 个相关库（后台标签，带限流） |
 | 🎈 页面浮层 | **双击**任意网页上的基因/rsID/坐标 → 鼠标旁弹出查询卡片（Shadow DOM 隔离，不污染页面） |
@@ -293,6 +337,8 @@ bio-lookup-extension/
 ├── options.html/.js       # 设置：浮层开关 + 自定义数据库管理
 ├── icons/                 # 16/48/128
 ├── build.py               # 构建：合并三模块 → background.bundle.js（消除 ESM 兼容风险）
+├── CHANGELOG.md           # 版本变更记录
+├── README.en.md           # English README
 ├── tests/                 # 自动化测试（识别 / 数据 / 后台模拟 / 降级场景，共 101 项）
 └── docs/                  # 演示图
 ```

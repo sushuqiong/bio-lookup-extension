@@ -100,6 +100,21 @@
   </section>
 
   <section class="panel">
+    <h2>页面自动高亮（v0.6.0 新功能）</h2>
+    <p class="tip">
+      开启后，网页里出现的<strong>基因名 / rsID / 数据集编号</strong>会被自动标记（绿色下划线），
+      点一下即可弹出查询卡片——浏览论文时不用再复制粘贴。
+      默认<strong>关闭</strong>，且只标记已知基因（本地词表），不会上传任何数据。
+    </p>
+    <div class="switch">
+      <input type="checkbox" id="highlightToggle">
+      <label for="highlightToggle">在网页上自动高亮基因名（点击即查）</label>
+    </div>
+    <p class="status" id="highlightStatus"></p>
+    <p class="tip">提示：与「页面浮层」共用同一个网页访问授权，开启任一项都会请求一次授权。</p>
+  </section>
+
+  <section class="panel">
     <h2>右键菜单</h2>
     <p class="tip">
       本扩展的右键查询菜单在<strong>安装/更新扩展时自动创建</strong>。若你在网页上选中文本右键时<strong>看不到「生信快查」</strong>，

@@ -40,6 +40,37 @@ $("floatToggle").addEventListener("change", async (e) => {
   await refreshFloat()
 })
 
+/* ── 页面自动高亮（v0.6.0） ── */
+async function refreshHighlight() {
+  try {
+    const res = await chrome.runtime.sendMessage({ type: "highlightStatus" })
+    const t = $("highlightToggle")
+    const s = $("highlightStatus")
+    if (!t || !s || !res?.ok) return
+    t.checked = !!res.enabled
+    if (res.enabled && res.granted) s.textContent = "✅ 已开启：网页上的基因名 / rsID 会自动标记，点击即查"
+    else if (res.enabled && !res.granted) s.textContent = "⚠️ 已开启但缺少网页访问授权——请关掉再开一次以重新授权"
+    else s.textContent = "当前关闭（默认）"
+  } catch (e) {
+    /* ignore */
+  }
+}
+
+$("highlightToggle").addEventListener("change", async (e) => {
+  const want = e.target.checked
+  if (want) {
+    const granted = await chrome.permissions.request({ origins: ["http://*/*", "https://*/*"] })
+    if (!granted) {
+      e.target.checked = false
+      toast("需要网页访问授权才能高亮")
+      return
+    }
+  }
+  const res = await chrome.runtime.sendMessage({ type: "setHighlight", enabled: want })
+  toast(res?.ok ? (want ? "已开启页面高亮" : "已关闭页面高亮") : "设置失败")
+  await refreshHighlight()
+})
+
 /* ── 右键菜单诊断信息 ── */
 async function refreshMenuDiag() {
   const d = await chrome.storage.local.get("menuDiag")
@@ -238,5 +269,6 @@ function escapeHtml(s) {
 }
 
 refreshFloat()
+refreshHighlight()
 refreshMenuDiag()
 renderCustom()

@@ -1,0 +1,93 @@
+name: 🐞 Bug 报告 / Bug report
+description: 报告一个可复现的问题（请尽量填写完整，方便快速定位）
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！请尽量提供完整信息——尤其是**浏览器版本**和**错误信息**，绝大多数问题都可以据此直接定位。
+        Thanks! Please fill in as much as you can, especially browser version and error messages.
+
+  - type: input
+    id: version
+    attributes:
+      label: 扩展版本 / Extension version
+      description: 点扩展图标，左上角显示的就是版本号（如 v0.6.0）
+      placeholder: v0.6.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: 浏览器 / Browser
+      options:
+        - Microsoft Edge
+        - Google Chrome
+        - 其他 Chromium 内核浏览器 / Other Chromium-based
+    validations:
+      required: true
+
+  - type: input
+    id: browser_version
+    attributes:
+      label: 浏览器版本 / Browser version
+      description: 在地址栏输入 `edge://version` 或 `chrome://version` 可查看
+      placeholder: 例如 152.0.4191.66
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 问题出现在哪里 / Where does it happen?
+      options:
+        - 右键菜单（选中文本后右键，看不到插件菜单）
+        - 面板（点扩展图标后弹出的窗口）
+        - 页面浮层（双击选中文本弹出的卡片）
+        - 页面高亮（网页上的基因名标记）
+        - 批量查询 / VCF 批量注释
+        - 扫描本页
+        - 设置页
+        - 安装 / 更新
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤 / Steps to reproduce
+      placeholder: |
+        1. 打开某个网页…
+        2. 选中文本 `BRCA1`…
+        3. 右键…
+        4. 看到…
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望的结果 / Expected result
+    validations:
+      required: false
+
+  - type: textarea
+    id: errors
+    attributes:
+      label: 错误信息 / Error messages
+      description: |
+        如果扩展卡片上有「错误」按钮，请点开并复制其中的内容；
+        也可以在扩展页点「检查视图：服务工作进程」→ Console 里复制红色报错。
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: 截图或补充说明 / Screenshots or notes
+    validations:
+      required: false

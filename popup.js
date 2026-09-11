@@ -314,6 +314,31 @@ document.querySelectorAll(".tab").forEach((tab) => {
 
 $("openOptions").addEventListener("click", () => chrome.runtime.openOptionsPage())
 
+/* ── 扫描本页（v0.6.0） ── */
+$("scanPage").addEventListener("click", async () => {
+  const btn = $("scanPage")
+  const old = btn.textContent
+  btn.disabled = true
+  btn.textContent = "🔍 扫描中…"
+  try {
+    const res = await chrome.runtime.sendMessage({ type: "scanPage" })
+    if (!res?.ok) throw new Error(res?.error || "扫描失败")
+    if (!res.items || !res.items.length) {
+      toast("本页没有找到可查询的基因 / 编号")
+      return
+    }
+    batchInput.value = res.items.map((i) => i.q).join("\n")
+    renderBatchPreview()
+    document.querySelector('.tab[data-tab="batch"]').click()
+    toast(`找到 ${res.items.length} 个，已填入批量面板`)
+  } catch (e) {
+    toast(String(e.message || e))
+  } finally {
+    btn.disabled = false
+    btn.textContent = old
+  }
+})
+
 /* ── 批量查询 ── */
 const batchInput = $("batchInput")
 const batchPreview = $("batchPreview")
