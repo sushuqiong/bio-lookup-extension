@@ -2,42 +2,57 @@
  * background.js —— MV3 service worker
  * 职责：动态右键菜单（按选中文本类型只显示相关数据库）+ 查询历史存储 + 徽章计数
  */
-import { classify, isQueryable, DBS } from "./classify.js"
+import { classify, isQueryable, DBS, parseVcfText, FALLBACK_DBS } from "./classify.js"
 
 const ROOT = "biolookup-root"
 const MAX_HISTORY = 500
 const FLOAT_SCRIPT_ID = "biolookup-float"
 const FLOAT_MATCHES = ["http://*/*", "https://*/*"]
+const ZOTERO_MATCHES = ["http://127.0.0.1:23119/*"]
 
-/* ── 自定义数据库：模板 {q} 占位符 ── */
-async function getCustomDbs() {
+/* ── 自定义数据库：内存缓存（避免 onShown 时异步读盘导致菜单闪烁） ── */
+let customCache = []
+let customLoaded = false
+
+async function loadCustomCache() {
   const { customDbs = [] } = await chrome.storage.local.get("customDbs")
-  return Array.isArray(customDbs) ? customDbs : []
-}
-
-function customToDb(cd) {
-  return {
-    label: cd.label,
-    icon: cd.icon || "⭐",
-    url: (q) => String(cd.template).replace(/\{q\}/g, encodeURIComponent(q)),
-    custom: true,
-    types: cd.types && cd.types.length ? cd.types : ["*"],
+  customCache = Array.isArray(customDbs) ? customDbs : []
+  customLoaded = true
+  // 同步注册到 DBS（URL 模板展开）
+  for (const cd of customCache) {
+    DBS[`custom:${cd.id}`] = {
+      label: cd.label,
+      icon: cd.icon || "⭐",
+      custom: true,
+      url: (q) => String(cd.template).replace(/\{q\}/g, encodeURIComponent(q)),
+    }
   }
 }
 
-/** 把自定义库按类型合并进推荐列表（排在官方库之后、去重） */
-async function withCustom(c) {
-  const custom = await getCustomDbs()
-  if (!custom.length) return c
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === "local" && changes.customDbs) loadCustomCache()
+})
+
+/** 把自定义库按类型合并进推荐列表，并追加兜底通用检索 */
+function withCustom(c) {
+  if (!customLoaded) return { ...c, dbs: mergeFallback(c.dbs, c.type) }
   const extra = []
-  for (const cd of custom) {
+  for (const cd of customCache) {
     const types = cd.types && cd.types.length ? cd.types : ["*"]
     if (!types.includes("*") && !types.includes(c.type)) continue
-    const key = `custom:${cd.id}`
-    DBS[key] = customToDb(cd)
-    extra.push(key)
+    extra.push(`custom:${cd.id}`)
   }
-  return { ...c, dbs: [...c.dbs, ...extra] }
+  return { ...c, dbs: mergeFallback([...c.dbs, ...extra], c.type) }
+}
+
+/** 追加兜底库（防误判后无路可走），去重 */
+function mergeFallback(dbs, type) {
+  const out = [...dbs]
+  for (const f of FALLBACK_DBS) {
+    if (type === "unknown") break // unknown 已包含通用库
+    if (!out.includes(f)) out.push(f)
+  }
+  return out
 }
 
 /* ── 安装：创建根菜单 + 初始化存储 ── */
@@ -52,16 +67,18 @@ chrome.runtime.onInstalled.addListener(async () => {
   const { history, customDbs } = await chrome.storage.local.get(["history", "customDbs"])
   if (!Array.isArray(history)) await chrome.storage.local.set({ history: [] })
   if (!Array.isArray(customDbs)) await chrome.storage.local.set({ customDbs: [] })
+  await loadCustomCache()
   await updateBadge()
   await syncFloatScript()
 })
 
-chrome.runtime.onStartup?.addListener(() => {
+chrome.runtime.onStartup?.addListener(async () => {
+  await loadCustomCache()
   updateBadge()
   syncFloatScript()
 })
 
-/* ── 动态菜单：每次右键显示前，按类型重建 ── */
+/* ── 动态菜单：每次右键显示前，按类型重建（同步，避免闪烁） ── */
 let lastKey = ""
 
 chrome.contextMenus.onShown.addListener((info) => {
@@ -70,22 +87,63 @@ chrome.contextMenus.onShown.addListener((info) => {
     chrome.contextMenus.update(ROOT, { visible: false }, () => chrome.contextMenus.refresh())
     return
   }
-  const isBatch = parseBatch(text).length > 1
-  const key = `${isBatch ? "BATCH" : classify(text).type}|${text.slice(0, 60)}`
+  const vcfRows = parseVcfText(text)
+  const isVcf = vcfRows.length > 1
+  const isBatch = !isVcf && parseBatch(text).length > 1
+  const key = `${isVcf ? "VCF" + vcfRows.length : isBatch ? "BATCH" : classify(text).type}|${text.slice(0, 60)}`
   if (key === lastKey) {
     chrome.contextMenus.update(ROOT, { visible: true }, () => chrome.contextMenus.refresh())
     return
   }
   lastKey = key
-  ;(async () => {
-    const c = await withCustom(classify(text))
-    chrome.contextMenus.removeAll(() => {
-      if (isBatch) buildBatchMenu(text)
-      else buildMenus(c)
-      chrome.contextMenus.refresh()
-    })
-  })()
+  chrome.contextMenus.removeAll(() => {
+    if (isVcf) buildVcfMenu(vcfRows)
+    else if (isBatch) buildBatchMenu(text)
+    else buildMenus(withCustom(classify(text)))
+    chrome.contextMenus.refresh()
+  })
 })
+
+/** VCF 多行菜单：批量注释 */
+function buildVcfMenu(rows) {
+  chrome.contextMenus.create({
+    id: ROOT,
+    title: `生信快查 · 🧾 VCF ${rows.length} 条变异`,
+    contexts: ["selection"],
+  })
+  chrome.contextMenus.create({
+    id: "vcf:gnomad",
+    parentId: ROOT,
+    title: `🌍 全部查 gnomAD（${rows.length} 条）`,
+    contexts: ["selection"],
+  })
+  chrome.contextMenus.create({
+    id: "vcf:clinvar",
+    parentId: ROOT,
+    title: `🏥 全部查 ClinVar（${rows.length} 条）`,
+    contexts: ["selection"],
+  })
+  chrome.contextMenus.create({
+    id: "vcf:varsome",
+    parentId: ROOT,
+    title: `🧪 全部查 VarSome（${rows.length} 条）`,
+    contexts: ["selection"],
+  })
+  chrome.contextMenus.create({ id: "sep1", parentId: ROOT, type: "separator", contexts: ["selection"] })
+  const rsCount = rows.filter((r) => r.kind === "rsid").length
+  chrome.contextMenus.create({
+    id: "vcf:auto",
+    parentId: ROOT,
+    title: `🚀 智能路由（${rsCount} 个 rsID 走 dbSNP，其余走 gnomAD）`,
+    contexts: ["selection"],
+  })
+  chrome.contextMenus.create({
+    id: "vcf:csv",
+    parentId: ROOT,
+    title: "⬇️ 导出规范化查询词（CSV）",
+    contexts: ["selection"],
+  })
+}
 
 function buildMenus(c) {
   chrome.contextMenus.create({
@@ -190,12 +248,94 @@ async function runBatch(text, mode) {
   await updateBadge()
 }
 
+/* ── VCF 批量注释：把每条变异的规范查询词路由到目标库 ── */
+async function runVcfBatch(text, target) {
+  const rows = parseVcfText(text)
+  if (!rows.length) return
+  const limit = 15
+  const used = rows.slice(0, limit)
+
+  if (target === "csv") {
+    // 导出规范化查询词：CHROM,POS,ID,REF,ALT,gnomAD,VCF原行
+    const header = "CHROM,POS,ID,REF,ALT,gnomAD_query,original"
+    const body = used
+      .map((r) => [r.chrom, r.pos, r.id || ".", r.ref, r.alts.join("|"), r.query, r.raw || ""].map((v) => `"${v}"`).join(","))
+      .join("\n")
+    const url =
+      "data:text/csv;charset=utf-8," + encodeURIComponent("\uFEFF" + header + "\n" + body)
+    await downloadText(url, `vcf-queries-${Date.now()}.csv`)
+    return
+  }
+
+  const dbFor = (r) => {
+    if (target === "gnomad") return "gnomad"
+    if (target === "clinvar") return "clinvar"
+    if (target === "varsome") return "varsome"
+    // auto：rsID 优先 dbSNP，其余 gnomAD
+    return r.kind === "rsid" ? "dbsnp" : "gnomad"
+  }
+
+  used.forEach((r, i) => {
+    const dbId = dbFor(r)
+    const db = DBS[dbId]
+    if (!db) return
+    setTimeout(() => chrome.tabs.create({ url: db.url(r.query), active: false }), i * 150)
+  })
+
+  // 历史留痕：一条汇总记录
+  const { history = [] } = await chrome.storage.local.get("history")
+  const entry = {
+    q: `VCF × ${used.length}（${used[0].query}…）`,
+    type: "variant_vcf",
+    typeName: "VCF 批量",
+    emoji: "🧾",
+    db: target,
+    dbLabel: `VCF 批量 → ${target}`,
+    ts: Date.now(),
+  }
+  await chrome.storage.local.set({ history: [entry, ...history].slice(0, MAX_HISTORY) })
+  await updateBadge()
+}
+
+/** 用 data: URL 触发下载（SW 内无 DOM，改用 downloads 权限替代：简化为打开 CSV 标签页供手动保存） */
+async function downloadText(url, filename) {
+  // MV3 service worker 无 <a download>；用 chrome.downloads 需要额外权限，
+  // 这里退化为在新标签页打开 data URL（用户可 ⌘S 保存），零权限依赖。
+  await chrome.tabs.create({ url, active: true })
+}
+
+/* ── Zotero 联动：查询本地 Zotero 库并跳转选中 ── */
+async function searchZotero(query) {
+  const granted = await chrome.permissions.contains({ origins: ZOTERO_MATCHES })
+  if (!granted) return { error: "需要开启 Zotero 联动（设置页）" }
+  try {
+    const res = await fetch(
+      `http://127.0.0.1:23119/api/users/0/items?q=${encodeURIComponent(query)}&limit=5&format=json`,
+      { headers: { "Zotero-Allowed-Request": "1" } },
+    )
+    if (!res.ok) return { error: `Zotero 返回 ${res.status}` }
+    const items = await res.json()
+    if (!Array.isArray(items) || !items.length) return { error: "本地 Zotero 库中未找到" }
+    const first = items[0]
+    const key = first.key || (first.data && first.data.key)
+    return { key, count: items.length, title: first.data?.title || "" }
+  } catch (e) {
+    return { error: "无法连接本地 Zotero（请确认 Zotero 已运行且开启 API）" }
+  }
+}
+
 /* ── 点击处理 ── */
 chrome.contextMenus.onClicked.addListener(async (info) => {
   const id = String(info.menuItemId || "")
   const text = (info.selectionText || "").trim()
   const c = classify(text)
   if (!c) return
+
+  // VCF 批量
+  if (id.startsWith("vcf:")) {
+    await runVcfBatch(text, id.slice(4))
+    return
+  }
 
   if (id.startsWith("batch:")) {
     const mode = id.slice(6) === "auto" ? "auto" : id.slice(6)
@@ -207,6 +347,21 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
     const dbId = id.slice(3)
     const db = DBS[dbId]
     if (!db) return
+
+    // Zotero 特殊处理
+    if (db.zotero) {
+      const r = await searchZotero(c.query)
+      if (r.key) {
+        await chrome.tabs.create({ url: `zotero://select/library/items/${r.key}` })
+        await addHistory({ ...c, name: "文献" }, "zotero")
+      } else {
+        chrome.action.setBadgeText({ text: "✗" })
+        chrome.action.setBadgeBackgroundColor({ color: "#f472b6" })
+        setTimeout(() => updateBadge(), 2200)
+      }
+      return
+    }
+
     await chrome.tabs.create({ url: db.url(c.query) })
     await addHistory(c, dbId)
     return
@@ -296,6 +451,19 @@ async function syncFloatScript(forceRequest) {
         allFrames: false,
       },
     ])
+    // 修复体验：动态注册只对新页面生效，这里立即注入所有已打开的页面
+    try {
+      const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] })
+      await Promise.all(
+        tabs.map((t) =>
+          t.id
+            ? chrome.scripting.executeScript({ target: { tabId: t.id }, files: ["content.js"] }).catch(() => {})
+            : Promise.resolve(),
+        ),
+      )
+    } catch (e) {
+      /* 部分页面（商店页/受限页）注入失败可忽略 */
+    }
     return true
   }
   if ((!floatEnabled || !granted) && has) {

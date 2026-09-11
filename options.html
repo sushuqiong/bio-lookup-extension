@@ -54,6 +54,21 @@
   </section>
 
   <section class="panel">
+    <h2>Zotero 联动（选中 PMID / DOI 时在本地 Zotero 库中查找）</h2>
+    <div class="switch">
+      <input type="checkbox" id="zoteroToggle">
+      <label for="zoteroToggle" style="font-size:13px;">启用 Zotero 联动</label>
+    </div>
+    <p class="tip">
+      需要 <b>Zotero 7 正在运行</b>，并在 Zotero 中勾选<br>
+      <code>设置 → 高级 → 允许其他应用与本机 Zotero 通讯</code>（本地 API 端口 23119）。<br>
+      开启后，选中 <code>PMID: 12345678</code> 或 DOI → 右键「📗 在 Zotero 中查找」→ 命中则直接跳转 Zotero 选中该条目。<br>
+      插件不会上传任何数据，只访问本机 127.0.0.1。
+    </p>
+    <p class="status" id="zoteroStatus"></p>
+  </section>
+
+  <section class="panel">
     <h2>添加自定义数据库</h2>
     <div class="grid">
       <label for="cdLabel">名称 *</label>

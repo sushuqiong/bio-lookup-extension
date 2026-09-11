@@ -150,16 +150,21 @@ function render() {
       const h = rows[Number(li.dataset.i)]
       if (!h) return
       if (h.db === "ALL") {
+        // 修复：popup 关闭会销毁 JS 上下文，多标签打开必须交给 background
         const c = classify(h.q)
-        c.dbs.slice(0, 5).forEach((id, k) => {
-          setTimeout(() => chrome.tabs.create({ url: DBS[id].url(h.q), active: false }), k * 120)
+        chrome.runtime.sendMessage({
+          type: "openAll",
+          query: h.q,
+          dbIds: c.dbs.slice(0, 5).map((id) => id),
         })
+        toast("已在后台打开多个库")
+        setTimeout(loadHistory, 400)
       } else if (DBS[h.db]) {
         openUrl(DBS[h.db].url(h.q))
+        record(classify(h.q), h.db)
       } else {
         openUrl(`https://www.ncbi.nlm.nih.gov/search/all/?term=${encodeURIComponent(h.q)}`)
       }
-      record(classify(h.q), h.db)
     })
   })
 

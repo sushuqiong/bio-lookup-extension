@@ -40,6 +40,43 @@ $("floatToggle").addEventListener("change", async (e) => {
   await refreshFloat()
 })
 
+/* ── Zotero 联动开关 ── */
+const ZOTERO_ORIGIN = "http://127.0.0.1:23119/*"
+
+async function refreshZotero() {
+  const granted = await chrome.permissions.contains({ origins: [ZOTERO_ORIGIN] })
+  $("zoteroToggle").checked = granted
+  $("zoteroStatus").textContent = granted
+    ? "状态：已启用（可访问本机 Zotero API）"
+    : "状态：未启用"
+}
+
+$("zoteroToggle").addEventListener("change", async (e) => {
+  const want = e.target.checked
+  if (want) {
+    const granted = await chrome.permissions.request({ origins: [ZOTERO_ORIGIN] })
+    if (!granted) {
+      e.target.checked = false
+      toast("未获得授权")
+      await refreshZotero()
+      return
+    }
+    // 探测 Zotero 是否在运行
+    try {
+      const res = await fetch("http://127.0.0.1:23119/api/users/0/items?limit=1", {
+        headers: { "Zotero-Allowed-Request": "1" },
+      })
+      toast(res.ok ? "Zotero 连接正常 ✅" : `Zotero 返回 ${res.status}（请确认已开启 API）`)
+    } catch (err) {
+      toast("授权成功，但未检测到 Zotero（请确认 Zotero 正在运行）")
+    }
+  } else {
+    await chrome.permissions.remove({ origins: [ZOTERO_ORIGIN] })
+    toast("已关闭 Zotero 联动")
+  }
+  await refreshZotero()
+})
+
 /* ── 自定义数据库 ── */
 async function getCustom() {
   const { customDbs = [] } = await chrome.storage.local.get("customDbs")
@@ -140,20 +177,29 @@ $("importFile").addEventListener("change", async (e) => {
     if (!Array.isArray(incoming)) throw new Error("格式不正确")
     const list = await getCustom()
     let added = 0
+    let skipped = 0
     for (const cd of incoming) {
-      if (!cd?.label || !cd?.template?.includes("{q}")) continue
+      // 安全校验：必须有 label、模板含 {q}、且为 http(s) 协议（防 javascript: 注入）
+      if (!cd?.label || typeof cd.template !== "string" || !cd.template.includes("{q}")) {
+        skipped++
+        continue
+      }
+      if (!/^https?:\/\//i.test(cd.template.trim())) {
+        skipped++
+        continue
+      }
       list.push({
         id: cd.id || Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        label: cd.label,
+        label: String(cd.label).slice(0, 60),
         icon: cd.icon || "⭐",
-        template: cd.template,
-        types: cd.types?.length ? cd.types : ["*"],
+        template: cd.template.trim(),
+        types: Array.isArray(cd.types) && cd.types.length ? cd.types : ["*"],
       })
       added++
     }
     await setCustom(list)
     await renderCustom()
-    toast(`导入 ${added} 条`)
+    toast(skipped ? `导入 ${added} 条，跳过 ${skipped} 条（格式/协议不合法）` : `导入 ${added} 条`)
   } catch (err) {
     toast("导入失败：" + err.message)
   }

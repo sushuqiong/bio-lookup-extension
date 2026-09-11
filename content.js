@@ -143,10 +143,15 @@
       const sel = window.getSelection()
       const text = sel ? sel.toString().trim() : ""
       if (!text) return hide()
-      chrome.runtime.sendMessage({ type: "classify", text }, (res) => {
-        if (!res || !res.ok || !res.data) return hide()
-        show(e.clientX, e.clientY, res.data)
-      })
+      try {
+        chrome.runtime.sendMessage({ type: "classify", text }, (res) => {
+          if (chrome.runtime.lastError) return hide() // 扩展已重载/卸载 → 静默退出
+          if (!res || !res.ok || !res.data) return hide()
+          show(e.clientX, e.clientY, res.data)
+        })
+      } catch (err) {
+        // Extension context invalidated：扩展更新/重载后旧脚本会抛错，忽略即可
+      }
     },
     true,
   )

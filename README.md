@@ -1,12 +1,58 @@
 # 生信快查 · Bio Lookup
 
-> 选中基因名 / GEO 编号 / 变异位点 / rsID / PMID，**右键一键跳转 15+ 生信数据库**——智能识别类型、页面浮层、批量查询、可自定义数据库、自动留痕查询历史。
+> 选中基因名 / GEO 编号 / 变异位点 / rsID / PMID，**右键一键跳转 15+ 生信数据库**——智能识别类型、VCF 批量注释、Zotero 联动、页面浮层、批量查询、可自定义数据库、自动留痕查询历史。
 
 Chrome / Edge 浏览器扩展（Manifest V3）· 零依赖零构建 · 默认不读网页 · 无追踪
 
 ![历史面板](docs/preview-history.webp)
 ![批量查询](docs/preview-batch.webp)
 ![页面浮层](docs/preview-float.webp)
+
+---
+
+## 🆕 v0.3 新功能
+
+### 🧾 VCF 批量注释（核心新功能）
+在网页上**直接选中一段 VCF**（多行，含 `##` header 也没关系）→ 右键菜单变成 VCF 模式：
+
+```
+##fileformat=VCFv4.2
+#CHROM  POS       ID          REF  ALT
+17      7676154   rs80357906  C    T
+chr1    12345     .           A    G
+2       54321     .           G    A
+```
+
+菜单提供：
+| 选项 | 行为 |
+|---|---|
+| 🌍 全部查 gnomAD | 每行按 `CHROM-POS-REF-ALT` 规范格式打开 gnomAD variant 页 |
+| 🏥 全部查 ClinVar | 每行转 `17:7676154` 坐标 term 检索 |
+| 🧪 全部查 VarSome | 同 gnomAD 规范格式（hg38） |
+| 🚀 **智能路由** | 有 rsID 的走 dbSNP，其余走 gnomAD（**一条命令查完混合清单**） |
+| ⬇️ 导出规范化查询词 | CSV（CHROM/POS/ID/REF/ALT/gnomAD_query/原行），便于留档或喂给别的工具 |
+
+**关键点**：插件会把 VCF 字段**归一化**成各库能直接识别的格式——`chr17:7676154 C>T`、`chr17:7676154C>T`、`17-7676154-C-T` 三种写法都能转成 gnomAD 需要的 `17-7676154-C-T`。
+
+### 📗 Zotero 联动
+选中 `PMID: 12345678` 或 DOI → 右键「📗 在 Zotero 中查找」→ 调用**本机 Zotero API**（127.0.0.1:23119）搜索 → 命中则直接 `zotero://select` 跳转并选中该条目。
+
+前置条件：Zotero 7 运行中 + `设置 → 高级 → 允许其他应用与本机 Zotero 通讯`；插件侧在设置页一键开启（`optional_host_permissions`，只访问本机回环地址）。
+
+### 🐛 对抗性审查修复（v0.3 一并处理）
+
+我做了一轮自审（前端视角），发现并修复：
+
+| # | 问题 | 严重度 | 修复 |
+|---|---|---|---|
+| 1 | popup 里"全部打开"重查用 `setTimeout`，**popup 一关就中断**（只能开 1 个标签） | 🔴 | 改由 background 执行 |
+| 2 | 导入自定义库**未校验 URL 协议**，恶意配置可注入 `javascript:` | 🔴 | 导入时强校验 `^https?://` + 跳过计数提示 |
+| 3 | `onShown` 异步读 storage → 菜单可能闪烁/延迟 | 🟡 | 自定义库改内存缓存 + `storage.onChanged` 同步 |
+| 4 | 开启浮层后**已打开的页面不生效**（动态注册只对新页面） | 🟡 | 开启时 `executeScript` 立即注入所有 http(s) 标签 |
+| 5 | 识别误判无退路（如 `COVID` 被当基因） | 🟡 | 所有类型菜单末尾自动追加 **🔍 NCBI 全库检索 / Google Scholar** |
+| 6 | 扩展重载后 content script `sendMessage` 静默失败 | 🟡 | `chrome.runtime.lastError` + try/catch 兜底 |
+| 7 | 键盘用户无法唤起浮层 | 🟡 | 加 `Alt+Shift+B` 快捷键打开面板 |
+
 
 ---
 
@@ -33,7 +79,7 @@ Bio Lookup 的四个差异点：
 
 | 功能 | 说明 |
 |---|---|
-| 🔍 智能类型识别 | 9 类对象正则判别，39 项单元测试（`node tests/classify.test.mjs`） |
+| 🔍 智能类型识别 | 9 类对象正则判别，67 项单元测试（`node tests/classify.test.mjs`） |
 | 🖱️ 动态右键菜单 | 菜单标题显示识别结果（如「🧬 基因「BRCA1」」），只列相关库 |
 | 🚀 一键全开 | 单次查询并行打开 5 个相关库（后台标签，带限流） |
 | 🎈 页面浮层 | **双击**任意网页上的基因/rsID/坐标 → 鼠标旁弹出查询卡片（Shadow DOM 隔离，不污染页面） |
@@ -111,7 +157,7 @@ chr17:7676154 C>T
 | 变异 (HGVS) | ClinVar · gnomAD · VarSome · Franklin |
 | 变异 (坐标) | gnomAD · ClinVar · VarSome · UCSC |
 | GEO / 数据集 | GEO · SRA Run Selector · ArrayExpress · PubMed |
-| 文献 | PubMed · Europe PMC · Google Scholar |
+| 文献 | PubMed · Europe PMC · Google Scholar · **Zotero（本机库）** |
 | 区间 / 序列 | UCSC Genome Browser · Ensembl · NCBI BLAST |
 
 ## 🧠 识别规则示例
@@ -125,6 +171,7 @@ chr17:7676154 C>T
 | `NM_007294.4:c.68_69del` `p.Val600Glu` | 🧪 变异 (HGVS) |
 | `chr1:12345-12400` | 🗺️ 基因组区间 |
 | `PMID: 12345678` | 📚 文献 |
+| `17	7676154	rs80357906	C	T` | 🧾 VCF 记录（自动归一化为 `rs80357906` 或 `17-7676154-C-T`） |
 | `10.1038/s41586-020-2008-3` | 🔖 DOI |
 | 20+ 位 `ATCGN` 串 | 🚀 核酸序列 |
 
@@ -138,6 +185,7 @@ chr17:7676154 C>T
 | `storage` | 本地保存历史与自定义配置 | ✅ |
 | `scripting` | 动态注册/注销页面浮层脚本 | ✅（浮层用） |
 | `optional_host_permissions`（http/https） | **仅在你开启页面浮层时**申请，用于注入浮层 | ❌ 默认不申请 |
+| `optional_host_permissions`（127.0.0.1:23119） | **仅在你开启 Zotero 联动时**申请，只访问本机 Zotero API | ❌ 默认不申请 |
 
 **无网络请求**（除你自己触发的数据库跳转）、**无遥测**、**不读网页内容**（除非你主动开启浮层）。
 
@@ -152,7 +200,7 @@ bio-lookup-extension/
 ├── popup.html/.css/.js    # 历史 + 批量查询面板
 ├── options.html/.js       # 设置：浮层开关 + 自定义数据库管理
 ├── icons/                 # 16/48/128
-├── tests/                 # 识别引擎测试（39 项）
+├── tests/                 # 识别引擎 / VCF / 归一化测试（67 项）
 └── docs/                  # 演示图
 ```
 
@@ -162,9 +210,9 @@ bio-lookup-extension/
 
 - [x] v0.1：智能识别 + 动态菜单 + 全开 + 历史
 - [x] v0.2：页面浮层 + 批量查询 + 自定义数据库 + CSV 导出
-- [ ] v0.3：变异批量注释（本地 VCF 字段解析 → 生成 gnomAD/ClinVar 直链）
-- [ ] v0.3：与 Zotero / 文献管理器联动（选中文献 → 查基因关联）
-- [ ] v0.4：i18n（English UI）、商店上架
+- [x] v0.3：**VCF 批量注释**（字段解析 + 坐标归一化 + 智能路由 + CSV 导出）、**Zotero 联动**（本机 API 搜索 + 跳转选中）、7 项对抗性审查修复
+- [ ] v0.4：i18n（English UI）、商店上架（Edge Add-ons / Chrome Web Store）
+- [ ] v1.0：支持多基因组合查询、与实验室 LIMS / 内部数据库对接
 
 ## 📄 License
 

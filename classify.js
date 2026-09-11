@@ -19,21 +19,99 @@ export const DBS = {
   sra: { label: "SRA Run Selector", icon: "🗄️", url: (q) => `https://www.ncbi.nlm.nih.gov/Traces/study/?acc=${enc(q)}` },
   arrayexpress: { label: "ArrayExpress", icon: "📊", url: (q) => `https://www.ebi.ac.uk/biostudies/arrayexpress/studies?query=${enc(q)}` },
   // 变异
-  dbsnp: { label: "dbSNP", icon: "🔎", url: (q) => `https://www.ncbi.nlm.nih.gov/snp/${enc(q)}` },
-  clinvar: { label: "ClinVar", icon: "🏥", url: (q) => (q.toLowerCase().startsWith("rs") ? `https://www.ncbi.nlm.nih.gov/clinvar/?term=${enc(q)}` : `https://www.ncbi.nlm.nih.gov/clinvar/variation/?term=${enc(q)}`) },
-  gnomad: { label: "gnomAD", icon: "🌍", url: (q) => `https://gnomad.broadinstitute.org/variant/${enc(q)}?dataset=gnomad_r4` },
-  varsome: { label: "VarSome", icon: "🧪", url: (q) => `https://varsome.com/variant/hg38/${enc(q)}` },
-  franklin: { label: "Franklin", icon: "🧠", url: (q) => `https://franklin.genoox.com/clinical-db/variant/${enc(q)}` },
+  dbsnp: { label: "dbSNP", icon: "🔎", url: (q) => `https://www.ncbi.nlm.nih.gov/snp/${enc(rsCore(q))}` },
+  clinvar: { label: "ClinVar", icon: "🏥", url: (q) => `https://www.ncbi.nlm.nih.gov/clinvar/?term=${enc(clinvarTerm(q))}` },
+  gnomad: { label: "gnomAD", icon: "🌍", url: (q) => `https://gnomad.broadinstitute.org/variant/${enc(toGnomad(q))}?dataset=gnomad_r4` },
+  varsome: { label: "VarSome", icon: "🧪", url: (q) => `https://varsome.com/variant/hg38/${enc(toGnomad(q))}` },
+  franklin: { label: "Franklin", icon: "🧠", url: (q) => `https://franklin.genoox.com/clinical-db/variant/${enc(toGnomad(q))}` },
   // 基因组区间 / 序列
-  ucsc: { label: "UCSC Genome Browser", icon: "🗺️", url: (q) => `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&position=${enc(q)}` },
+  ucsc: { label: "UCSC Genome Browser", icon: "🗺️", url: (q) => `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&position=${enc(regionNorm(q))}` },
   blast: { label: "NCBI BLAST", icon: "🚀", url: (q) => `https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&USER_FORMAT_DEFAULTS=on&SET_AND_ORGANISM=on&QUERY=${enc(q)}` },
+  // 文献工具
+  zotero: { label: "在 Zotero 中查找", icon: "📗", zotero: true, url: (q) => `zotero://select/items/0_${enc(q)}` },
   // 通用
-  ncbiAll: { label: "NCBI 全库", icon: "🔍", url: (q) => `https://www.ncbi.nlm.nih.gov/search/all/?term=${enc(q)}` },
+  ncbiAll: { label: "NCBI 全库检索", icon: "🔍", url: (q) => `https://www.ncbi.nlm.nih.gov/search/all/?term=${enc(q)}` },
   googleScholar: { label: "Google Scholar", icon: "🎓", url: (q) => `https://scholar.google.com/scholar?q=${enc(q)}` },
 }
 
 function enc(s) {
   return encodeURIComponent(s)
+}
+
+/* ── 查询词归一化（让 VCF / 坐标 / rsID 各种写法都能被目标库识别） ── */
+
+/** 取 rsID 核心：rs80357906 / "rs80357906 (ClinVar)" → 80357906 */
+export function rsCore(q) {
+  const m = String(q).match(/rs\s*(\d+)/i)
+  return m ? m[1] : String(q).trim()
+}
+
+/** 坐标归一化成 gnomAD / VarSome 需要的 CHROM-POS-REF-ALT */
+export function toGnomad(q) {
+  const s = String(q).trim()
+  // 已是 17-7676154-C-T 形式
+  if (/^(chr)?([0-9]{1,2}|[XYM]|MT)-?\d+-[ACGTN]+-[ACGTN]+$/i.test(s)) {
+    return s.replace(/^chr/i, "").replace(/:|-/g, (m, i) => (i === 0 && m === ":" ? "-" : "-")).replace(/-+/g, "-")
+  }
+  // chr17:7676154C>T / chr17:7676154 C>T / chr17:g.7676154C>T
+  const m = s.match(/^(?:chr)?([0-9]{1,2}|[XYM]|MT)[:\-]g?\.?\s*(\d+)\s*[:\-_]?\s*([ACGTN]+)\s*[>\/\-_]\s*([ACGTN]+)/i)
+  if (m) return `${m[1]}-${m[2]}-${m[3].toUpperCase()}-${m[4].toUpperCase()}`
+  // chr17:7676154（只有位置）→ gnomAD 不支持纯位置，退回原串（ClinVar/UCSC 可处理）
+  return s.replace(/^chr/i, "").replace(":", "-")
+}
+
+/** ClinVar 检索词：rsID 直接搜，坐标转 "17:7676154" */
+export function clinvarTerm(q) {
+  const s = String(q).trim()
+  if (/^rs\d+/i.test(s)) return s.match(/rs\d+/i)[0]
+  const m = s.match(/^(?:chr)?([0-9]{1,2}|[XYM]|MT)[:\-]g?\.?(\d+)/i)
+  if (m) return `${m[1]}:${m[2]}`
+  return s
+}
+
+/** UCSC position 参数 */
+export function regionNorm(q) {
+  return String(q).trim().replace(/^chr/i, "chr").replace(/\s+/g, "")
+}
+
+/* ── VCF 记录解析（v0.3） ── */
+
+/**
+ * 解析一行 VCF（TAB 或空格分隔，至少到 ALT）：CHROM POS ID REF ALT ...
+ * 返回 { chrom, pos, id, ref, alts, query, kind } 或 null
+ */
+export function parseVcfLine(line) {
+  const f = String(line).trim().split(/\s+/)
+  if (f.length < 4) return null
+  const [chromRaw, pos, id, ref, alt] = f
+  if (!/^(chr)?([0-9]{1,2}|[XYM]|MT)$/i.test(chromRaw)) return null
+  if (!/^\d{2,}$/.test(pos)) return null
+  if (!/^[ACGTNacgtn.]+$/.test(ref)) return null
+  const chrom = chromRaw.replace(/^chr/i, "").toUpperCase()
+  const alts = (alt || "")
+    .split(",")
+    .map((a) => a.toUpperCase())
+    .filter((a) => /^[ACGTN<>*]+$/.test(a))
+  if (!alts.length && !/^rs\d+$/i.test(id)) return null
+  const rid = id && id !== "." && /^rs\d+$/i.test(id) ? id.toLowerCase() : ""
+  const kind = rid ? "rsid" : "coord"
+  const query = rid ? rid : `${chrom}-${pos}-${ref.toUpperCase()}-${alts[0] || "N"}`
+  return { chrom, pos: Number(pos), id: rid, ref: ref.toUpperCase(), alts, query, kind, raw: f.join("\t") }
+}
+
+/** 判断一段文本是否为 VCF（≥1 行合法记录） */
+export function isVcfText(text) {
+  const lines = String(text).trim().split(/\r?\n/).filter((l) => l.trim() && !l.startsWith("#"))
+  return lines.length >= 1 && lines.every((l) => parseVcfLine(l) !== null)
+}
+
+/** 从多行文本中提取 VCF 记录（忽略 ## header 与空行） */
+export function parseVcfText(text) {
+  return String(text)
+    .split(/\r?\n/)
+    .map((l) => (l.startsWith("#") ? null : parseVcfLine(l)))
+    .filter(Boolean)
+    .slice(0, 50)
 }
 
 /* ── 各类型的推荐库（顺序即菜单顺序，第一个为"首选"） ── */
@@ -42,13 +120,17 @@ export const TYPES = {
   variant_rs: { name: "SNP (rsID)", emoji: "🔎", dbs: ["dbsnp", "clinvar", "gnomad", "varsome", "franklin"] },
   variant_hgvs: { name: "变异 (HGVS)", emoji: "🧪", dbs: ["clinvar", "gnomad", "varsome", "franklin"] },
   variant_coord: { name: "变异 (坐标)", emoji: "🌍", dbs: ["gnomad", "clinvar", "varsome", "ucsc"] },
+  variant_vcf: { name: "VCF 记录", emoji: "🧾", dbs: ["gnomad", "clinvar", "dbsnp", "varsome", "ucsc"] },
   geo: { name: "GEO 数据集", emoji: "📦", dbs: ["geo", "sra", "arrayexpress", "pubmed"] },
-  pmid: { name: "文献 (PMID)", emoji: "📚", dbs: ["pubmed", "europepmc", "googleScholar"] },
-  doi: { name: "文献 (DOI)", emoji: "🔖", dbs: ["europepmc", "pubmed", "googleScholar"] },
+  pmid: { name: "文献 (PMID)", emoji: "📚", dbs: ["pubmed", "europepmc", "googleScholar", "zotero"] },
+  doi: { name: "文献 (DOI)", emoji: "🔖", dbs: ["europepmc", "pubmed", "googleScholar", "zotero"] },
   region: { name: "基因组区间", emoji: "🗺️", dbs: ["ucsc", "ensembl"] },
   sequence: { name: "核酸序列", emoji: "🚀", dbs: ["blast", "ncbiAll"] },
   unknown: { name: "通用查询", emoji: "🔍", dbs: ["ncbiAll", "pubmed", "googleScholar", "ensembl", "genecards"] },
 }
+
+/** 兜底：任何类型的菜单末尾都提供通用检索（防误判后无路可走） */
+export const FALLBACK_DBS = ["ncbiAll", "googleScholar"]
 
 /* ── 正则规则库 ── */
 const RULES = [
@@ -75,11 +157,20 @@ const RULES = [
 ]
 
 /**
- * 识别选中文本类型，返回 { type, name, emoji, dbs, query }
+ * 识别选中文本类型，返回 { type, name, emoji, dbs, query, vcf? }
  */
 export function classify(raw) {
   const q = (raw || "").trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, "")
   if (!q) return null
+
+  // ① VCF 行优先（CHROM POS ID REF ALT ...）→ 归一化为 gnomAD/ClinVar 可直接吃的查询词
+  const vcf = parseVcfLine(q)
+  if (vcf) {
+    const t = TYPES.variant_vcf
+    return { type: "variant_vcf", name: t.name, emoji: t.emoji, dbs: t.dbs, query: vcf.query, vcf }
+  }
+
+  // ② 其余按正则规则
   for (const rule of RULES) {
     if (rule.re.test(q)) {
       const t = TYPES[rule.type]
