@@ -222,37 +222,48 @@ export function extractEntities(text, limit = 40) {
     else hits.set(key, { q: String(q), type, count: 1 })
   }
 
-  const upper = t.toUpperCase()
+  // ① 已知基因 + 别名：合并为单个正则，只扫一遍（v0.6.0 性能优化）
+  const re = geneScanRe()
+  re.lastIndex = 0
+  let m
+  while ((m = re.exec(t))) {
+    if (m[0].length === 0) {
+      re.lastIndex++
+      continue
+    }
+    const raw = m[0]
+    const up = raw.toUpperCase()
+    const official = GENE_INFO[up] ? up : GENE_ALIAS[up] || GENE_ALIAS[up.replace(/-/g, "")] || up
+    if (GENE_INFO[official]) add(official, "gene")
+  }
 
-  // ① 已知基因（严格词边界，避免子串误匹配）
-  for (const g of Object.keys(GENE_INFO)) {
-    const re = new RegExp(`(?<![A-Z0-9])${escRe(g)}(?![A-Z0-9])`, "gi")
-    const m = upper.match(re)
-    if (m) for (let i = 0; i < m.length; i++) add(g, "gene")
-  }
-  // ② 基因别名（HER2 / PD-L1 / p53 等）
-  for (const [alias, official] of Object.entries(GENE_ALIAS)) {
-    const re = new RegExp(`(?<![A-Z0-9-])${escRe(alias)}(?![A-Z0-9-])`, "gi")
-    const m = upper.match(re)
-    if (m) for (let i = 0; i < m.length; i++) add(official, "gene")
-  }
-  // ③ rsID
-  for (const m of t.match(/(?<![A-Za-z0-9])rs\s?\d{4,}(?![A-Za-z0-9])/gi) || []) add(m.replace(/\s+/g, "").toLowerCase(), "variant_rs")
-  // ④ GEO / SRA 编号
-  for (const m of t.match(/(?<![A-Za-z0-9])(GSE|GSM|GDS|GPL)\s?\d{3,}(?![A-Za-z0-9])/gi) || [])
-    add(m.replace(/\s+/g, "").toUpperCase(), "geo")
-  // ⑤ PMID
-  for (const m of t.match(/PMID:?\s?\d{7,9}/gi) || []) add(m.replace(/PMID:?\s?/i, ""), "pmid")
-  // ⑥ DOI
-  for (const m of t.match(/10\.\d{4,9}\/[^\s"'<>)\]]+/g) || []) add(m.replace(/[.,;)]+$/, ""), "doi")
-  // ⑦ 坐标型变异（chr17:7676154 C>T 等）
-  for (const m of t.match(/(?<![A-Za-z0-9])(?:chr)?\d{1,2}:\d{2,}\s?[ACGT]{1,}>[ACGT]{1}/gi) || [])
-    add(m.replace(/\s+/g, " ").trim(), "variant_coord")
+  // ② rsID
+  for (const x of t.match(/(?<![A-Za-z0-9])rs\s?\d{4,}(?![A-Za-z0-9])/gi) || [])
+    add(x.replace(/\s+/g, "").toLowerCase(), "variant_rs")
+  // ③ GEO / SRA 编号
+  for (const x of t.match(/(?<![A-Za-z0-9])(GSE|GSM|GDS|GPL)\s?\d{3,}(?![A-Za-z0-9])/gi) || [])
+    add(x.replace(/\s+/g, "").toUpperCase(), "geo")
+  // ④ PMID
+  for (const x of t.match(/PMID:?\s?\d{7,9}/gi) || []) add(x.replace(/PMID:?\s?/i, ""), "pmid")
+  // ⑤ DOI
+  for (const x of t.match(/10\.\d{4,9}\/[^\s"'<>)\]]+/g) || []) add(x.replace(/[.,;)]+$/, ""), "doi")
+  // ⑥ 坐标型变异
+  for (const x of t.match(/(?<![A-Za-z0-9])(?:chr)?\d{1,2}:\d{2,}\s?[ACGT]{1,}>[ACGT]{1}/gi) || [])
+    add(x.replace(/\s+/g, " ").trim(), "variant_coord")
 
   return [...hits.values()].sort((a, b) => b.count - a.count || a.q.localeCompare(b.q)).slice(0, limit)
 }
 
-/** 页面高亮用的高置信目标集合（仅返回"明确能识别"的词，避免误标） */
+/** 基因/别名扫描正则（模块级缓存，长词优先避免短词先匹配） */
+let _geneScanRe = null
+function geneScanRe() {
+  if (_geneScanRe) return _geneScanRe
+  const words = Object.keys(GENE_INFO).concat(Object.keys(GENE_ALIAS))
+  words.sort((a, b) => b.length - a.length)
+  _geneScanRe = new RegExp(`(?<![A-Za-z0-9-])(?:${words.map(escRe).join("|")})(?![A-Za-z0-9-])`, "gi")
+  return _geneScanRe
+}
+
 export function buildHighlightTerms() {
   const terms = []
   for (const g of Object.keys(GENE_INFO)) terms.push({ q: g, type: "gene", exact: true })

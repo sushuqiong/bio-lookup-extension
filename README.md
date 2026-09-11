@@ -5,7 +5,7 @@
 ![release](https://img.shields.io/github/v/release/sushuqiong/bio-lookup-extension?color=16a34a)
 ![license](https://img.shields.io/github/license/sushuqiong/bio-lookup-extension?color=16a34a)
 ![manifest](https://img.shields.io/badge/Manifest-V3-16a34a)
-![tests](https://img.shields.io/badge/tests-146%20passing-16a34a)
+![tests](https://img.shields.io/badge/tests-169%20passing-16a34a)
 ![size](https://img.shields.io/badge/package-56%20KB-16a34a)
 
 > 选中基因名 / GEO 编号 / 变异位点 / rsID / PMID，**右键一键跳转 15+ 生信数据库**——智能识别类型、**内置 98 个肿瘤相关基因速查表**、VCF 批量注释、**序列工具**、Zotero 联动、页面浮层、批量查询、自定义数据库、**查询统计**与历史导出。
@@ -218,7 +218,7 @@ Bio Lookup 的四个差异点：
 
 | 功能 | 说明 |
 |---|---|
-| 🔍 智能类型识别 | 9 类对象正则判别，**146 项自动化测试**（识别引擎 67 + 数据层 26 + 扫描/高亮 21 + 后台模拟 32，全部可离线运行） |
+| 🔍 智能类型识别 | 9 类对象正则判别，**169 项自动化测试**（识别引擎 67 + 数据层 26 + 扫描/高亮 21 + 后台模拟 32，全部可离线运行） |
 | 🖱️ 动态右键菜单 | 菜单标题显示识别结果（如「🧬 基因「BRCA1」」），只列相关库 |
 | 🚀 一键全开 | 单次查询并行打开 5 个相关库（后台标签，带限流） |
 | 🎈 页面浮层 | **双击**任意网页上的基因/rsID/坐标 → 鼠标旁弹出查询卡片（Shadow DOM 隔离，不污染页面） |

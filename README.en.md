@@ -5,7 +5,7 @@
 ![release](https://img.shields.io/github/v/release/sushuqiong/bio-lookup-extension?color=16a34a)
 ![license](https://img.shields.io/github/license/sushuqiong/bio-lookup-extension?color=16a34a)
 ![manifest](https://img.shields.io/badge/Manifest-V3-16a34a)
-![tests](https://img.shields.io/badge/tests-146%20passing-16a34a)
+![tests](https://img.shields.io/badge/tests-169%20passing-16a34a)
 ![size](https://img.shields.io/badge/package-56%20KB-16a34a)
 
 > Select a gene symbol, GEO accession, variant, rsID or PMID on any page → **right-click to jump to 15+ bioinformatics databases**.
@@ -122,7 +122,7 @@ Requires Zotero 7 running with "Allow other applications to communicate".
 
 ## 🧪 Tests
 
-146 automated tests, all runnable offline (Node 18+):
+169 automated tests, all runnable offline (Node 18+):
 
 ```bash
 node tests/classify.test.mjs          # 67 — type detection / VCF parsing / URL building
@@ -147,7 +147,7 @@ content.js             # floating card + in-page highlighting (injected on deman
 popup.html/css/js      # main panel (history / batch / statistics)
 options.html/js        # settings (custom DBs, floating card, highlighting, menu repair)
 build.py               # merges the three modules into background.bundle.js
-tests/                 # 146 automated tests
+tests/                 # 169 automated tests
 docs/                  # GitHub Pages landing page + privacy policy + store screenshots
 ```
 
