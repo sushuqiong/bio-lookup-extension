@@ -31,6 +31,10 @@ Chrome / Edge 浏览器扩展（Manifest V3）· 零依赖零构建 · **明亮�
 
 
 
+| 🔍 **扫描本页**（v0.6.0） | 🖍️ **网页基因自动高亮**（v0.6.0） |
+|---|---|
+| ![扫描本页](docs/store/shot7-scan.png) | ![自动高亮](docs/store/shot8-highlight.png) |
+
 | 智能识别 + 基因速查 | 右键菜单 | VCF 批量注释 |
 |---|---|---|
 | ![查询面板](docs/store/shot2-history.png) | ![右键菜单](docs/store/shot1-context-menu.png) | ![VCF](docs/store/shot3-vcf.png) |

@@ -13,6 +13,10 @@
 
 A browser extension for Chrome / Edge (Manifest V3) · zero dependencies · zero build step · **light nature theme** · does not read pages by default · no tracking.
 
+| 🔍 **Scan this page** (v0.6.0) | 🖍️ **In-page gene highlighting** (v0.6.0) |
+|---|---|
+| ![scan](docs/store/shot7-scan.png) | ![highlight](docs/store/shot8-highlight.png) |
+
 | Query panel + gene info | Right-click menu | VCF batch annotation |
 |---|---|---|
 | ![panel](docs/store/shot2-history.png) | ![menu](docs/store/shot1-context-menu.png) | ![vcf](docs/store/shot3-vcf.png) |

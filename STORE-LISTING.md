@@ -17,6 +17,8 @@
 | **截图 4**（页面浮层） | `docs/store/shot4-float.png` | ✅ 1280×800 |
 | **截图 5**（批量查询） | `docs/store/shot5-batch.png` | ✅ 1280×800 |
 | **截图 6**（查询统计） | `docs/store/shot6-stats.png` | ✅ 1280×800 |
+| **截图 7**（扫描本页，v0.6.0） | `docs/store/shot7-scan.png` | ✅ 1280×800 |
+| **截图 8**（网页基因自动高亮，v0.6.0） | `docs/store/shot8-highlight.png` | ✅ 1280×800 |
 | 小促销图 440×280 | `docs/store/promo-small-440x280.png` | ✅ |
 | 大促销图 1400×560 | `docs/store/promo-large-1400x560.png` | ✅ |
 | **隐私政策 URL** | https://sushuqiong.github.io/bio-lookup-extension/privacy.html | ✅ 已上线 |
