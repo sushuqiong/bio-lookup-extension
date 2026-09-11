@@ -1,7 +1,11 @@
 /**
  * classify.js —— 选中文本类型识别 + 数据库映射
  * 纯函数，无 chrome API 依赖，便于单测与复用
+ * v0.4：引入类型主题色 + 基因速查表 + 序列工具（见 genedata.js）
  */
+import { TYPE_COLORS } from "./genedata.js"
+
+export * from "./genedata.js"
 
 /* ── 数据库定义：{ id, label, icon, url(q) } ── */
 export const DBS = {
@@ -167,18 +171,18 @@ export function classify(raw) {
   const vcf = parseVcfLine(q)
   if (vcf) {
     const t = TYPES.variant_vcf
-    return { type: "variant_vcf", name: t.name, emoji: t.emoji, dbs: t.dbs, query: vcf.query, vcf }
+    return { type: "variant_vcf", name: t.name, emoji: t.emoji, dbs: t.dbs, query: vcf.query, vcf, color: TYPE_COLORS.variant_vcf }
   }
 
   // ② 其余按正则规则
   for (const rule of RULES) {
     if (rule.re.test(q)) {
       const t = TYPES[rule.type]
-      return { type: rule.type, name: t.name, emoji: t.emoji, dbs: t.dbs, query: q }
+      return { type: rule.type, name: t.name, emoji: t.emoji, dbs: t.dbs, query: q, color: TYPE_COLORS[rule.type] || TYPE_COLORS.unknown }
     }
   }
   const t = TYPES.unknown
-  return { type: "unknown", name: t.name, emoji: t.emoji, dbs: t.dbs, query: q }
+  return { type: "unknown", name: t.name, emoji: t.emoji, dbs: t.dbs, query: q, color: TYPE_COLORS.unknown }
 }
 
 /**

@@ -2,7 +2,7 @@
  * background.js —— MV3 service worker
  * 职责：动态右键菜单（按选中文本类型只显示相关数据库）+ 查询历史存储 + 徽章计数
  */
-import { classify, isQueryable, DBS, parseVcfText, FALLBACK_DBS } from "./classify.js"
+import { classify, isQueryable, DBS, parseVcfText, FALLBACK_DBS, TYPE_COLORS, lookupGene, analyzeSequence } from "./classify.js"
 
 const ROOT = "biolookup-root"
 const MAX_HISTORY = 500
@@ -405,7 +405,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             return { id, label: db.label, icon: db.icon, url: db.url(c.query) }
           })
           .filter(Boolean)
-        sendResponse({ ok: true, data: { ...c, dbs } })
+        // v0.4：附带基因速查 / 序列分析（供页面浮层展示）
+        const gene = c.type === "gene" ? lookupGene(c.query) : null
+        const seq = c.type === "sequence" ? analyzeSequence(c.query) : null
+        sendResponse({ ok: true, data: { ...c, dbs, gene, seq } })
         return
       }
       if (msg?.type === "openDb" || msg?.type === "openAll") {

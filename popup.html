@@ -2,65 +2,90 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>生信快查 · 查询历史</title>
+  <title>生信快查 · Bio Lookup</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
+  <div class="aurora" aria-hidden="true"></div>
+
   <header class="head">
     <div class="brand">
       <span class="logo">🧬</span>
       <div>
         <strong>生信快查</strong>
-        <span class="sub">Bio Lookup · v0.2</span>
+        <span class="sub">BIO LOOKUP · v0.4</span>
       </div>
     </div>
     <div class="head-right">
       <span class="count" id="count">0</span>
-      <button class="icon-btn" id="openOptions" title="设置（自定义数据库 / 页面浮层）">⚙️</button>
+      <button class="icon-btn" id="openOptions" title="设置（自定义数据库 / 页面浮层 / Zotero）">⚙️</button>
     </div>
   </header>
 
   <nav class="tabs">
-    <button class="tab is-active" data-tab="history">🕘 查询历史</button>
-    <button class="tab" data-tab="batch">📚 批量查询</button>
+    <button class="tab is-active" data-tab="history">🕘 查询</button>
+    <button class="tab" data-tab="batch">📚 批量</button>
+    <button class="tab" data-tab="stats">📊 统计</button>
   </nav>
 
+  <!-- ══════ 查询历史面板 ══════ -->
   <section id="pane-history">
-  <section class="query-box">
-    <div class="query-row">
-      <input id="q" type="text" placeholder="输入基因 / rsID / GEO / 坐标 / PMID…" autocomplete="off" spellcheck="false">
-      <button id="go" class="btn primary">查询</button>
-    </div>
-    <p class="hint" id="hint">自动识别类型 · 未识别时走通用检索</p>
-    <div class="db-row" id="dbRow"></div>
+    <section class="query-box">
+      <div class="query-row">
+        <input id="q" type="text" placeholder="输入基因 / rsID / GEO / 坐标 / VCF / 序列…" autocomplete="off" spellcheck="false">
+        <button id="go" class="btn primary">查询</button>
+      </div>
+      <p class="hint" id="hint">自动识别类型 · 未识别时走通用检索</p>
+
+      <!-- 基因速查卡（识别为基因且在表内时显示） -->
+      <div class="info-card" id="geneCard" hidden>
+        <div class="info-head">
+          <span class="info-gene" id="geneName">BRCA1</span>
+          <span class="info-cn" id="geneCn"></span>
+        </div>
+        <div class="info-row"><span class="info-label">相关癌种</span><div class="tags" id="geneCancers"></div></div>
+        <div class="info-row"><span class="info-label">主要通路</span><span class="info-path" id="genePathway"></span></div>
+      </div>
+
+      <!-- 序列工具卡（识别为核酸序列时显示） -->
+      <div class="info-card seq-card" id="seqCard" hidden>
+        <div class="info-head"><span class="info-gene">🔬 序列分析</span><span class="info-cn" id="seqLen"></span></div>
+        <div class="info-row"><span class="info-label">GC 含量</span><span class="info-path" id="seqGc"></span></div>
+        <div class="seq-line"><span class="seq-tag">反向互补</span><code id="seqRc"></code><button class="mini-copy" data-copy="seqRc">复制</button></div>
+        <div class="seq-line"><span class="seq-tag">RNA 转录</span><code id="seqRna"></code><button class="mini-copy" data-copy="seqRna">复制</button></div>
+      </div>
+
+      <div class="db-row" id="dbRow"></div>
+    </section>
+
+    <section class="toolbar">
+      <input id="filter" type="search" placeholder="筛选历史…" autocomplete="off">
+      <select id="typeFilter" aria-label="类型筛选">
+        <option value="">全部类型</option>
+        <option value="gene">🧬 基因</option>
+        <option value="variant_rs">🔎 SNP</option>
+        <option value="variant_hgvs">🧪 变异 HGVS</option>
+        <option value="variant_coord">🌍 变异坐标</option>
+        <option value="variant_vcf">🧾 VCF</option>
+        <option value="geo">📦 GEO</option>
+        <option value="pmid">📚 文献</option>
+        <option value="doi">🔖 DOI</option>
+        <option value="region">🗺️ 区间</option>
+        <option value="sequence">🚀 序列</option>
+        <option value="unknown">🔍 通用</option>
+      </select>
+    </section>
+
+    <ul class="list" id="list"></ul>
+    <p class="empty" id="empty">还没有查询记录。<br>在任意网页选中基因名 / rsID / GEO 编号，右键试试。</p>
+
+    <footer class="foot">
+      <button id="export" class="btn">⬇️ 导出 CSV</button>
+      <button id="clear" class="btn danger">🗑️ 清空历史</button>
+    </footer>
   </section>
 
-  <section class="toolbar">
-    <input id="filter" type="search" placeholder="筛选历史…" autocomplete="off">
-    <select id="typeFilter" aria-label="类型筛选">
-      <option value="">全部类型</option>
-      <option value="gene">🧬 基因</option>
-      <option value="variant_rs">🔎 SNP</option>
-      <option value="variant_hgvs">🧪 变异 HGVS</option>
-      <option value="variant_coord">🌍 变异坐标</option>
-      <option value="geo">📦 GEO</option>
-      <option value="pmid">📚 文献</option>
-      <option value="doi">🔖 DOI</option>
-      <option value="region">🗺️ 区间</option>
-      <option value="sequence">🚀 序列</option>
-      <option value="unknown">🔍 通用</option>
-    </select>
-  </section>
-
-  <ul class="list" id="list"></ul>
-  <p class="empty" id="empty">还没有查询记录。<br>在任意网页选中基因名 / rsID / GEO 编号，右键试试。</p>
-
-  <footer class="foot">
-    <button id="export" class="btn">⬇️ 导出 CSV</button>
-    <button id="clear" class="btn danger">🗑️ 清空历史</button>
-  </footer>
-  </section>
-
+  <!-- ══════ 批量查询面板 ══════ -->
   <section id="pane-batch" hidden>
     <div class="batch-box">
       <p class="batch-tip">每行一条（也支持逗号/分号分隔），最多 20 条。适合把论文里的基因列表、变异清单一次性查完。</p>
@@ -73,6 +98,29 @@
       </div>
       <div class="batch-preview" id="batchPreview"></div>
       <button class="btn primary" id="runBatch" style="width:100%; margin-top:10px;">🚀 批量打开（后台标签）</button>
+    </div>
+  </section>
+
+  <!-- ══════ 统计面板 ══════ -->
+  <section id="pane-stats" hidden>
+    <div class="stats-box">
+      <div class="stat-cards">
+        <div class="stat-card"><b id="stTotal">0</b><span>总查询</span></div>
+        <div class="stat-card"><b id="stToday">0</b><span>今日</span></div>
+        <div class="stat-card"><b id="stTypes">0</b><span>类型数</span></div>
+        <div class="stat-card"><b id="stDbs">0</b><span>库数</span></div>
+      </div>
+
+      <h3 class="stat-title">📊 类型分布</h3>
+      <div class="bar-list" id="stTypeBars"></div>
+
+      <h3 class="stat-title">🏆 常用数据库 Top 5</h3>
+      <div class="bar-list" id="stDbBars"></div>
+
+      <h3 class="stat-title">🔥 高频查询词</h3>
+      <div class="cloud" id="stCloud"></div>
+
+      <p class="stats-foot">仅统计本地历史记录，数据不出浏览器。</p>
     </div>
   </section>
 
