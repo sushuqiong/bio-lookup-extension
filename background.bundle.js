@@ -453,6 +453,13 @@ function createMenus() {
   })
 }
 
+/* ── 启动兜底：无论何种原因导致菜单缺失，SW 启动即创建 ── */
+try {
+  createMenus()
+} catch (e) {
+  /* 忽略：稍后 onInstalled/onStartup 还会再试 */
+}
+
 /* ── 自定义库（内存缓存，避免 onShown 异步读盘） ── */
 let customCache = []
 let customLoaded = false
@@ -471,7 +478,7 @@ async function loadCustomCache() {
   }
 }
 
-chrome.storage.onChanged.addListener((changes, area) => {
+chrome.storage?.onChanged?.addListener((changes, area) => {
   if (area === "local" && changes.customDbs) loadCustomCache()
 })
 
@@ -493,7 +500,7 @@ function withCustom(c) {
 }
 
 /* ── 安装 / 启动 ── */
-chrome.runtime.onInstalled.addListener(async () => {
+chrome.runtime?.onInstalled?.addListener(async () => {
   createMenus()
   const { history, customDbs } = await chrome.storage.local.get(["history", "customDbs"])
   if (!Array.isArray(history)) await chrome.storage.local.set({ history: [] })
@@ -503,17 +510,20 @@ chrome.runtime.onInstalled.addListener(async () => {
   await syncFloatScript()
 })
 
-chrome.runtime.onStartup?.addListener(async () => {
+chrome.runtime?.onStartup?.addListener(async () => {
   createMenus() // SW 被回收后重启时确保菜单存在
   await loadCustomCache()
   updateBadge()
   syncFloatScript()
 })
 
-/* ── 菜单显示前：只更新标题与可见性（不重建） ── */
+/* ── 菜单显示前：只更新标题与可见性（不重建） ──
+ * 注意：contextMenus.onShown 需要 Chrome/Edge 116+。若该 API 不存在，
+ * 下面的注册会被跳过（脚本不崩溃），菜单保持常显、点击时照样按类型智能路由。
+ */
 let lastKey = ""
 
-chrome.contextMenus.onShown.addListener((info) => {
+chrome.contextMenus?.onShown?.addListener((info) => {
   const text = info.selectionText || ""
   const queryable = isQueryable(text)
   const c = queryable ? classify(text) : null
@@ -571,7 +581,7 @@ function parseBatch(text) {
 }
 
 /* ── 点击处理 ── */
-chrome.contextMenus.onClicked.addListener(async (info) => {
+chrome.contextMenus?.onClicked?.addListener(async (info) => {
   const id = String(info.menuItemId || "")
   const text = (info.selectionText || "").trim()
   const c = classify(text)
@@ -740,7 +750,7 @@ async function searchZotero(query) {
 }
 
 /* ── 消息接口（浮层 / 面板） ── */
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+chrome.runtime?.onMessage?.addListener((msg, sender, sendResponse) => {
   ;(async () => {
     try {
       if (msg?.type === "classify") {

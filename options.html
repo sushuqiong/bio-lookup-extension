@@ -5,39 +5,69 @@
   <title>生信快查 · 设置</title>
   <link rel="stylesheet" href="popup.css">
   <style>
-    body { width: auto; max-width: 860px; margin: 0 auto; padding: 28px 22px 60px; max-height: none; }
-    h1 { font-size: 20px; margin-bottom: 6px; }
-    .lead { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+    /* ── 自然山水主题（与 popup 一致） ── */
+    * { box-sizing: border-box; }
+    body {
+      background:
+        radial-gradient(160px 160px at 86% 4%, rgba(250, 204, 21, 0.42), transparent 68%),
+        radial-gradient(240px 130px at 10% 0%, rgba(190, 242, 100, 0.4), transparent 70%),
+        linear-gradient(180deg, #dff1ff 0%, #e9f7ec 40%, #f4fbf0 100%);
+      color: #14361f;
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      line-height: 1.85;
+      font-size: 15.5px;
+      padding: 56px 22px 200px;
+      min-height: 100vh;
+      max-height: none;
+      width: auto;
+      display: block;
+      overflow-x: hidden;
+    }
+    .scenery {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      height: 220px;
+      pointer-events: none;
+      z-index: 0;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 200' preserveAspectRatio='none'%3E%3Cpath d='M0 132 L48 88 L92 118 L142 74 L205 116 L262 84 L318 118 L400 92 L400 200 L0 200 Z' fill='%23bbf7d0' opacity='0.75'/%3E%3Cpath d='M0 158 L58 116 L118 146 L188 106 L256 142 L330 112 L400 138 L400 200 L0 200 Z' fill='%2386efac' opacity='0.8'/%3E%3Cg fill='%23166534' opacity='0.9'%3E%3Cpath d='M28 200 L40 152 L52 200 Z'/%3E%3Cpath d='M58 200 L72 140 L86 200 Z'/%3E%3Cpath d='M96 200 L107 160 L118 200 Z'/%3E%3Cpath d='M320 200 L332 148 L344 200 Z'/%3E%3Cpath d='M350 200 L363 138 L376 200 Z'/%3E%3Cpath d='M382 200 L392 162 L400 200 Z'/%3E%3C/g%3E%3Cellipse cx='200' cy='198' rx='190' ry='10' fill='%237dd3fc' opacity='0.55'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: bottom center;
+      background-size: 100% 100%;
+    }
+    .wrap { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+    h1 { font-size: 22px; margin-bottom: 6px; color: #14532d; }
+    .lead { color: #4b6b58; font-size: 13.5px; margin-bottom: 24px; }
     .panel {
       padding: 20px;
       border-radius: 16px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(21, 128, 61, 0.2);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 8px 24px rgba(20, 83, 45, 0.08);
       margin-bottom: 20px;
     }
-    .panel h2 { font-size: 15px; margin-bottom: 12px; }
+    .panel h2 { font-size: 15px; margin-bottom: 12px; color: #14532d; }
     .grid { display: grid; grid-template-columns: 90px 1fr; gap: 10px 12px; align-items: center; }
-    .grid label { font-size: 12.5px; color: var(--muted); }
+    .grid label { font-size: 12.5px; color: #5c7a67; }
     .grid input, .grid select {
-      padding: 9px 11px; border-radius: 9px; border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.06); color: var(--text); font-size: 13px; outline: none;
+      padding: 9px 11px; border-radius: 9px; border: 1px solid rgba(21, 128, 61, 0.24);
+      background: #fff; color: #14361f; font-size: 13px; outline: none;
     }
-    .grid input:focus, .grid select:focus { border-color: var(--teal); }
-    .grid select option { background: #16224a; }
+    .grid input:focus, .grid select:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.16); }
+    .grid select option { background: #fff; }
     .row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
     table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12.5px; }
-    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--border); }
-    th { color: var(--muted); font-weight: 600; font-size: 11.5px; letter-spacing: 0.04em; }
-    td.mono { font-family: var(--mono); font-size: 11.5px; color: var(--teal); word-break: break-all; }
-    .tip { font-size: 12px; color: var(--muted); line-height: 1.75; margin-top: 10px; }
-    code { font-family: var(--mono); background: rgba(100, 255, 218, 0.1); color: var(--teal); padding: 1px 6px; border-radius: 5px; }
+    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid rgba(21, 128, 61, 0.14); }
+    th { color: #5c7a67; font-weight: 600; font-size: 11.5px; letter-spacing: 0.04em; }
+    td.mono { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px; color: #15803d; word-break: break-all; }
+    .tip { font-size: 12px; color: #4b6b58; line-height: 1.75; margin-top: 10px; }
+    code { font-family: ui-monospace, Consolas, monospace; background: rgba(22, 163, 74, 0.12); color: #15803d; padding: 1px 6px; border-radius: 5px; }
     .switch { display: flex; align-items: center; gap: 10px; }
-    .switch input { width: 17px; height: 17px; accent-color: #7c3aed; }
-    .status { font-size: 12px; color: var(--muted); }
+    .switch input { width: 17px; height: 17px; accent-color: #16a34a; }
+    .status { font-size: 12px; color: #5c7a67; }
   </style>
 </head>
 <body>
-  <div class="aurora" aria-hidden="true"></div>
+  <div class="scenery" aria-hidden="true"></div>
   <h1>🧬 生信快查 · 设置</h1>
   <p class="lead">自定义数据库、页面浮层开关。所有设置只保存在本地浏览器（<code>chrome.storage.local</code>），不上传任何服务器。</p>
 
