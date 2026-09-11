@@ -9,14 +9,14 @@
 
 | 材料 | 位置 | 状态 |
 |---|---|---|
-| **扩展包 zip** | `bio-lookup-extension-v0.4.0.zip`（或用仓库 v0.3.1 Release 附件） | ✅ 已打包（12 文件，32KB） |
+| **扩展包 zip** | `bio-lookup-extension-v0.5.0.zip`（或用仓库 v0.3.1 Release 附件） | ✅ 已打包（12 文件，32KB） |
 | 扩展图标 128×128 | `icons/icon128.png` | ✅ |
 | **截图 1**（右键菜单） | `docs/store/shot1-context-menu.png` | ✅ 1280×800 |
-| **截图 2**（历史面板） | `docs/store/shot2-history.png` | ✅ 1280×800 |
-| **截图 3**（VCF 批量） | `docs/store/shot3-vcf.png` | ✅ 1280×800 |
+| **截图 2**（查询面板 + 基因速查表） | `docs/store/shot2-history.png` | ✅ 1280×800 |
+| **截图 3**（VCF 批量注释） | `docs/store/shot3-vcf.png` | ✅ 1280×800 |
 | **截图 4**（页面浮层） | `docs/store/shot4-float.png` | ✅ 1280×800 |
-| **截图 5**（基因速查表） | `docs/store/shot5-gene-card.png` | ✅ 1280×800 |
-| **截图 6**（统计看板） | `docs/store/shot6-stats.png` | ✅ 1280×800 |
+| **截图 5**（批量查询） | `docs/store/shot5-batch.png` | ✅ 1280×800 |
+| **截图 6**（查询统计） | `docs/store/shot6-stats.png` | ✅ 1280×800 |
 | 小促销图 440×280 | `docs/store/promo-small-440x280.png` | ✅ |
 | 大促销图 1400×560 | `docs/store/promo-large-1400x560.png` | ✅ |
 | **隐私政策 URL** | https://sushuqiong.github.io/bio-lookup-extension/privacy.html | ✅ 已上线 |
@@ -95,6 +95,7 @@ Bio Lookup 换了个思路：先识别你选中是什么，再只给你看相关
 • 页面浮层（可选）：双击网页上的基因名或 rsID，鼠标旁弹出查询卡片
 • Zotero 联动（可选）：选中 PMID / DOI 在本地 Zotero 库中查找并跳转选中
 • 自定义数据库：用 {q} 模板接入实验室镜像 / 内部系统，可限定适用类型，配置可导入导出
+• 界面采用明亮自然山水主题（浅色护眼，非暗色调）
 • 内置 98 个肿瘤相关基因速查表：选中基因即显示相关癌种与主要通路（本地数据，不联网）
 • 序列工具：选中 DNA 序列即可得长度 / GC 含量 / 反向互补链 / RNA 转录，一键复制
 • 类型主题色系统：11 种对象各配主题色，从菜单到卡片到统计图表颜色一致，一眼识别类型
@@ -166,7 +167,7 @@ MIT License · https://github.com/sushuqiong/bio-lookup-extension
 
 1. 打开 https://partner.microsoft.com/dashboard/microsoftedge/overview
 2. 用你的 **Microsoft 账号**登录（免费注册，无需付费；个人账号即可）
-3. 「Create new extension」→ 上传 `bio-lookup-extension-v0.4.0.zip`
+3. 「Create new extension」→ 上传 `bio-lookup-extension-v0.5.0.zip`
 4. 填写上面**第二节**的「基本信息」（名称/简短描述/分类/语言/关键词）
 5. 粘贴**第三节**的「详细描述」
 6. 上传截图（`shot1` ~ `shot4`，至少 1 张，建议 4 张全上）与小/大促销图

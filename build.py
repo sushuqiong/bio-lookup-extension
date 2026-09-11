@@ -7,7 +7,7 @@
 import os
 import re
 
-SRC = r"C:\Users\fengq\bio-lookup-extension"
+SRC = os.path.dirname(os.path.abspath(__file__))
 
 
 def strip_module_syntax(code, keep_imports=False):

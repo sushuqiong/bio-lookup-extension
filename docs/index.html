@@ -40,6 +40,26 @@
   .privacy{background:linear-gradient(135deg,rgba(100,255,218,.09),rgba(167,139,250,.09));border:1px solid rgba(100,255,218,.24)}
   footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--border);font-size:13.5px;color:var(--muted)}
   a{color:var(--teal)}
+
+  :root{--bg:#f4fbf0;--card:rgba(255,255,255,.88);--border:rgba(21,128,61,.2);--text:#14361f;--muted:#4b6b58;--teal:#15803d;--violet:#65a30d;--gold:#ca8a04}
+  body{background:
+    radial-gradient(320px 320px at 84% 4%, rgba(250,204,21,.38), transparent 68%),
+    radial-gradient(420px 240px at 6% -2%, rgba(190,242,100,.42), transparent 70%),
+    linear-gradient(180deg,#dff1ff 0%,#e9f7ec 40%,#f4fbf0 100%) no-repeat fixed !important;
+    color:#14361f}
+  h1 .hl{color:#16a34a;text-shadow:none}
+  a.btn.primary{background:linear-gradient(135deg,#16a34a,#65a30d);box-shadow:0 10px 26px rgba(22,163,74,.32)}
+  a.btn.ghost{border-color:rgba(21,128,61,.3);color:#15803d;background:rgba(255,255,255,.7)}
+  h2{color:#14532d;border-left-color:#16a34a}
+  .card{background:rgba(255,255,255,.85);border-color:rgba(21,128,61,.2)}
+  .card p{color:#3f5f4b}
+  th,td{border-bottom-color:rgba(21,128,61,.16)}
+  td{color:#3f5f4b}
+  code{color:#15803d;background:rgba(22,163,74,.12)}
+  .privacy{background:linear-gradient(135deg,rgba(190,242,100,.28),rgba(255,255,255,.8));border-color:rgba(21,128,61,.24)}
+  a{color:#15803d}
+  .shots img{border-color:rgba(21,128,61,.2);box-shadow:0 14px 36px rgba(20,83,45,.16)}
+  footer{border-top-color:rgba(21,128,61,.16);color:#4b6b58}
 </style>
 </head>
 <body>
@@ -47,11 +67,11 @@
   <div class="top">
     <img src="icons/icon128.png" alt="生信快查图标">
     <div>
-      <span class="badge">CHROME / EDGE · MANIFEST V3 · MIT</span>
+      <span class="badge">CHROME / EDGE · MANIFEST V3 · MIT · v0.5.0</span>
       <h1>生信快查 · <span class="hl">Bio Lookup</span></h1>
     </div>
   </div>
-  <p class="lead">选中基因名 / GEO 编号 / rsID / 变异位点 / PMID → 右键一键跳转 <b>15+ 生信数据库</b>。智能识别类型、内置 98 个肿瘤相关基因速查表、VCF 批量注释、序列工具、Zotero 联动、查询历史与统计——为生信与医学研究者做的浏览器扩展。</p>
+  <p class="lead">选中基因名 / GEO 编号 / rsID / 变异位点 / PMID → 右键一键跳转 <b>15+ 生信数据库</b>。智能识别类型、内置 98 个肿瘤相关基因速查表、VCF 批量注释、序列工具、Zotero 联动、查询历史与统计。**明亮自然山水主题**，零外部依赖。</p>
   <div class="btns">
     <a class="btn primary" href="https://github.com/sushuqiong/bio-lookup-extension/releases/latest">⬇️ 下载最新版</a>
     <a class="btn ghost" href="https://github.com/sushuqiong/bio-lookup-extension">📦 GitHub 仓库</a>
@@ -80,6 +100,16 @@
     <figure><img src="store/shot4-float.png" alt="页面浮层"><figcaption>双击选中文本 → 浮层卡片（可选功能）</figcaption></figure>
     <figure><img src="store/shot5-gene-card.png" alt="基因速查表"><figcaption>内置 98 个肿瘤相关基因速查表</figcaption></figure>
     <figure><img src="store/shot6-stats.png" alt="统计看板"><figcaption>查询统计：类型分布 / 常用库 / 高频词</figcaption></figure>
+  </div>
+
+  <h2>界面</h2>
+  <div class="shots">
+    <figure><img src="store/shot2-history.png" alt="查询面板"><figcaption>智能识别 + 98 个肿瘤基因速查表</figcaption></figure>
+    <figure><img src="store/shot1-context-menu.png" alt="右键菜单"><figcaption>选中文本右键 → 菜单只列相关库</figcaption></figure>
+    <figure><img src="store/shot3-vcf.png" alt="VCF 批量"><figcaption>选中 VCF → 批量注释（含智能路由）</figcaption></figure>
+    <figure><img src="store/shot5-batch.png" alt="批量查询"><figcaption>批量查询：一条命令查完清单</figcaption></figure>
+    <figure><img src="store/shot6-stats.png" alt="统计看板"><figcaption>查询统计：类型分布 / 常用库 / 高频词</figcaption></figure>
+    <figure><img src="store/shot4-float.png" alt="页面浮层"><figcaption>双击选中文本 → 浮层卡片</figcaption></figure>
   </div>
 
   <h2>支持的数据库</h2>

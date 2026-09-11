@@ -2,15 +2,42 @@
 
 > 选中基因名 / GEO 编号 / 变异位点 / rsID / PMID，**右键一键跳转 15+ 生信数据库**——智能识别类型、**内置 98 个肿瘤相关基因速查表**、VCF 批量注释、**序列工具**、Zotero 联动、页面浮层、批量查询、自定义数据库、**查询统计**与历史导出。
 
-Chrome / Edge 浏览器扩展（Manifest V3）· 零依赖零构建 · 默认不读网页 · 无追踪
+Chrome / Edge 浏览器扩展（Manifest V3）· 零依赖零构建 · **明亮自然山水主题** · 默认不读网页 · 无追踪
 
-![右键菜单](docs/store/shot1-context-menu.png)
-![基因速查](docs/store/shot5-gene-card.png)
-![统计面板](docs/store/shot6-stats.png)
+| 智能识别 + 基因速查 | 右键菜单 | VCF 批量注释 |
+|---|---|---|
+| ![查询面板](docs/store/shot2-history.png) | ![右键菜单](docs/store/shot1-context-menu.png) | ![VCF](docs/store/shot3-vcf.png) |
+
+| 批量查询 | 查询统计 | 页面浮层 |
+|---|---|---|
+| ![批量](docs/store/shot5-batch.png) | ![统计](docs/store/shot6-stats.png) | ![浮层](docs/store/shot4-float.png) |
+
 
 > 更多界面图见 `docs/store/`（右键菜单 / 历史面板 / VCF 批量 / 页面浮层 / 基因速查 / 统计看板）
 
 ---
+
+## 🆕 v0.5.0 稳定性修复 + 明亮自然主题
+
+### 🐞 修复：某些环境下右键菜单不出现
+**根因**：`chrome.contextMenus.onShown`（Chrome/Edge 116+ 引入的 API）在部分环境下为 `undefined`，
+而它在**顶层代码**里被直接调用 → 抛错 `Cannot read properties of undefined (reading 'addListener')`
+→ **后续注册 `onInstalled`（负责创建菜单）的代码根本没执行** → 菜单永不出现。
+
+**修复**：
+1. 所有 chrome API 监听注册改为**防御式可选链**（6 处）
+2. 新增**启动兜底**：service worker 一启动就尝试创建菜单
+3. `onShown` 缺失时**优雅降级**——菜单常显、点击仍按识别类型智能路由，核心功能不受影响
+4. 新增**降级场景测试**（模拟 API 缺失）与**模拟运行测试**（模拟 Chrome API 跑完整后台逻辑）
+
+> 如果你遇到同类问题：`edge://extensions` → 点卡片上的「错误」展开即可看到具体报错；本扩展另在**设置页**提供「🔧 重新创建右键菜单」按钮与菜单诊断信息（创建时间/项数/错误数）。
+
+### 🎨 主题：明亮自然山水丛林
+- 浅色自然背景：晨空渐变 + 暖阳光斑 + 缓缓飘动的云
+- **内联 SVG 山水丛林**背景层（层叠远山 + 松林剪影 + 水面反光），纯 CSS/SVG，**零外部图片依赖**
+- 主色：森林绿 / 草绿 / 暖阳金；卡片白色玻璃质感，文字深绿
+- 类型主题色在浅色底上自动压暗（`color-mix`），保证可读性
+- popup 面板 / 设置页 / 页面浮层**三处统一**
 
 ## 🆕 v0.4.3 稳定性修复
 
@@ -143,7 +170,7 @@ Bio Lookup 的四个差异点：
 
 | 功能 | 说明 |
 |---|---|
-| 🔍 智能类型识别 | 9 类对象正则判别，93 项单元测试（`node tests/classify.test.mjs` + `node tests/genedata.test.mjs`） |
+| 🔍 智能类型识别 | 9 类对象正则判别，**101 项自动化测试**（识别引擎 67 + 数据层 26 + 后台降级场景 8，全部可离线运行） |
 | 🖱️ 动态右键菜单 | 菜单标题显示识别结果（如「🧬 基因「BRCA1」」），只列相关库 |
 | 🚀 一键全开 | 单次查询并行打开 5 个相关库（后台标签，带限流） |
 | 🎈 页面浮层 | **双击**任意网页上的基因/rsID/坐标 → 鼠标旁弹出查询卡片（Shadow DOM 隔离，不污染页面） |
@@ -265,7 +292,8 @@ bio-lookup-extension/
 ├── popup.html/.css/.js    # 历史 + 批量查询面板
 ├── options.html/.js       # 设置：浮层开关 + 自定义数据库管理
 ├── icons/                 # 16/48/128
-├── tests/                 # 识别引擎 / VCF / 归一化测试（67 项）
+├── build.py               # 构建：合并三模块 → background.bundle.js（消除 ESM 兼容风险）
+├── tests/                 # 自动化测试（识别 / 数据 / 后台模拟 / 降级场景，共 101 项）
 └── docs/                  # 演示图
 ```
 

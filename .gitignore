@@ -1,0 +1,13 @@
+# 构建/临时
+_*.mjs
+_bundle_tmp.mjs
+_degraded_*.mjs
+*.log
+
+# 内部材料（不上传到公开仓库）
+MANUAL-*.md
+
+# 旧版本打包产物（走 Releases 分发，不进仓库）
+历史版本/
+*.crx
+*.pem
