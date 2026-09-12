@@ -9,7 +9,7 @@
 
 | 材料 | 位置 | 状态 |
 |---|---|---|
-| **扩展包 zip** | `bio-lookup-extension-v0.5.0.zip`（或用仓库 v0.3.1 Release 附件） | ✅ 已打包（12 文件，32KB） |
+| **扩展包 zip** | `bio-lookup-extension-v0.6.1.zip`（或用仓库 v0.6.1 Release 附件） | ✅ 已打包（12 文件，32KB） |
 | 扩展图标 128×128 | `icons/icon128.png` | ✅ |
 | **截图 1**（右键菜单） | `docs/store/shot1-context-menu.png` | ✅ 1280×800 |
 | **截图 2**（查询面板 + 基因速查表） | `docs/store/shot2-history.png` | ✅ 1280×800 |
@@ -17,8 +17,8 @@
 | **截图 4**（页面浮层） | `docs/store/shot4-float.png` | ✅ 1280×800 |
 | **截图 5**（批量查询） | `docs/store/shot5-batch.png` | ✅ 1280×800 |
 | **截图 6**（查询统计） | `docs/store/shot6-stats.png` | ✅ 1280×800 |
-| **截图 7**（扫描本页，v0.6.0） | `docs/store/shot7-scan.png` | ✅ 1280×800 |
-| **截图 8**（网页基因自动高亮，v0.6.0） | `docs/store/shot8-highlight.png` | ✅ 1280×800 |
+| **截图 7**（扫描本页，v0.6.1） | `docs/store/shot7-scan.png` | ✅ 1280×800 |
+| **截图 8**（网页基因自动高亮，v0.6.1） | `docs/store/shot8-highlight.png` | ✅ 1280×800 |
 | 小促销图 440×280 | `docs/store/promo-small-440x280.png` | ✅ |
 | 大促销图 1400×560 | `docs/store/promo-large-1400x560.png` | ✅ |
 | **隐私政策 URL** | https://sushuqiong.github.io/bio-lookup-extension/privacy.html | ✅ 已上线 |
@@ -169,7 +169,7 @@ MIT License · https://github.com/sushuqiong/bio-lookup-extension
 
 1. 打开 https://partner.microsoft.com/dashboard/microsoftedge/overview
 2. 用你的 **Microsoft 账号**登录（免费注册，无需付费；个人账号即可）
-3. 「Create new extension」→ 上传 `bio-lookup-extension-v0.5.0.zip`
+3. 「Create new extension」→ 上传 `bio-lookup-extension-v0.6.1.zip`
 4. 填写上面**第二节**的「基本信息」（名称/简短描述/分类/语言/关键词）
 5. 粘贴**第三节**的「详细描述」
 6. 上传截图（`shot1` ~ `shot4`，至少 1 张，建议 4 张全上）与小/大促销图

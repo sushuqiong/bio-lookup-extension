@@ -1,179 +1,241 @@
-# Bio Lookup · 生信快查
+<div align="center">
 
-[**中文**](README.md) | English
+# 🧬 Bio Lookup · 生信快查
 
-![release](https://img.shields.io/github/v/release/sushuqiong/bio-lookup-extension?color=16a34a)
-![license](https://img.shields.io/github/license/sushuqiong/bio-lookup-extension?color=16a34a)
-![manifest](https://img.shields.io/badge/Manifest-V3-16a34a)
-![tests](https://img.shields.io/badge/tests-169%20passing-16a34a)
-![size](https://img.shields.io/badge/package-56%20KB-16a34a)
+**Select a gene, rsID, variant, GEO accession or PMID → right-click → jump to 15+ bioinformatics databases**
 
-> Select a gene symbol, GEO accession, variant, rsID or PMID on any page → **right-click to jump to 15+ bioinformatics databases**.
-> Smart type detection · **98 cancer-related gene quick-reference** · page scan · in-page gene highlighting · VCF batch annotation · sequence tools · query statistics.
+A browser extension for life-science & medical researchers · zero dependencies · does not read pages by default · no tracking
 
-A browser extension for Chrome / Edge (Manifest V3) · zero dependencies · zero build step · **light nature theme** · does not read pages by default · no tracking.
+[![Edge Add-ons](https://img.shields.io/badge/Edge%20Add--ons-In%20Review-f59e0b?style=for-the-badge)](https://microsoftedge.microsoft.com/addons/detail/ORDCKFTQ6T96)
+[![Release](https://img.shields.io/github/v/release/sushuqiong/bio-lookup-extension?style=for-the-badge&color=16a34a)](https://github.com/sushuqiong/bio-lookup-extension/releases/latest)
+[![License](https://img.shields.io/github/license/sushuqiong/bio-lookup-extension?style=for-the-badge&color=16a34a)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-169%20passing-16a34a?style=for-the-badge)](tests/)
+[![Manifest](https://img.shields.io/badge/Manifest-V3-16a34a?style=for-the-badge)](manifest.json)
+[![Size](https://img.shields.io/badge/package-58%20KB-16a34a?style=for-the-badge)](https://github.com/sushuqiong/bio-lookup-extension/releases/latest)
 
-| 🔍 **Scan this page** (v0.6.0) | 🖍️ **In-page gene highlighting** (v0.6.0) |
-|---|---|
-| ![scan](docs/store/shot7-scan.png) | ![highlight](docs/store/shot8-highlight.png) |
+[中文](README.md) · [**English**](README.en.md)
 
-| Query panel + gene info | Right-click menu | VCF batch annotation |
+<img src="docs/store/shot1-context-menu.png" width="820" alt="Right-click a gene symbol to look it up">
+
+</div>
+
+---
+
+## 💡 The problem it solves
+
+Every day in bioinformatics: **the same gene name copied and pasted between five databases.**
+
+Look up `BRCA1` → GeneCards for cancers, NCBI Gene for the record, UniProt for the protein, PubMed for papers.
+Look up `rs80357906` → dbSNP, gnomAD for frequency, ClinVar for pathogenicity….
+Ten genes later you have a wall of tabs and no idea which is which.
+
+**Bio Lookup turns that into: select → right-click → one click.**
+
+---
+
+## ⬇️ Install (30 seconds)
+
+### Option 1 · Microsoft Edge Add-ons ⏳ *(in review, 1–7 business days)*
+
+> Submitted for review (Store ID `ORDCKFTQ6T96`). Once published it will be one click away:
+> **`https://microsoftedge.microsoft.com/addons/detail/ORDCKFTQ6T96`**
+>
+> ✅ One-click install · ✅ Auto-update · ✅ Survives restarts · ✅ No developer mode
+
+### Option 2 · GitHub download (**works right now**)
+
+1. **[Download the latest zip](https://github.com/sushuqiong/bio-lookup-extension/releases/latest)** (`bio-lookup-extension-vX.Y.Z.zip`)
+2. **Unzip** it to a **permanent location** (e.g. `C:\Users\<you>\Extensions\bio-lookup`)
+3. Open your extensions page: Edge → `edge://extensions` ｜ Chrome → `chrome://extensions`
+4. Turn on **Developer mode** (Edge: bottom-left sidebar; Chrome: top-right)
+5. Click **Load unpacked** → select the **unzipped folder** (not the zip)
+
+> [!IMPORTANT]
+> **Do NOT move, rename or delete the folder after loading.** The browser stores its **absolute path** — moving it makes the extension vanish (a reload is required).
+>
+> Requires desktop Chrome / Edge **116+**.
+
+**Quick test**: open any page → select `BRCA1` → right-click → you should see the "Bio Lookup · gene BRCA1" menu.
+
+---
+
+## ✨ Highlights
+
+| | Feature | What it does |
+|---|---|---|
+| 🔍 | **Scan this page** | Extract every gene / rsID / variant / GEO accession / PMID / DOI on the current page, de-duplicated and counted, straight into the batch panel |
+| 🧠 | **9 recognised object kinds** | gene · GEO/SRA · rsID · HGVS variant · coordinate variant · VCF row · genomic region · PMID/DOI · nucleotide sequence |
+| 🎯 | **Menu shows only relevant databases** | Selecting `rs80357906` lists variant databases only — no clutter |
+| 🚀 | **Open all at once** | Variant curation needs frequency + pathogenicity + original record → up to 5 related databases in background tabs |
+| 🧬 | **Built-in reference for 98 cancer-related genes** | Related cancers + main pathway, fully offline |
+| 🖍️ | **In-page gene highlighting** (optional) | Gene symbols on any page get marked; click to open a lookup card |
+| 🧾 | **VCF batch annotation** | Select a VCF block → coordinates normalised to the gnomAD format → batch query or CSV export |
+| 📚 | **Batch query** | Paste a gene list from a paper; each entry routed to its primary database |
+| 🔬 | **Sequence tools** | DNA → length / GC content / reverse complement / RNA transcript, one-click copy |
+| 📊 | **Statistics + history** | Type distribution, top databases, frequent terms; searchable history with CSV export |
+| 📗 | **Zotero integration** (optional) | Find a PMID/DOI in your local Zotero library |
+| ⚙️ | **Custom databases** | Add any site with a `{q}` template, optionally limited to certain object types |
+
+<details>
+<summary><b>🖼️ All screenshots (6)</b></summary>
+
+| Smart detection + gene reference | Right-click menu | VCF batch annotation |
 |---|---|---|
 | ![panel](docs/store/shot2-history.png) | ![menu](docs/store/shot1-context-menu.png) | ![vcf](docs/store/shot3-vcf.png) |
 
-| Batch query | Statistics | In-page floating card |
+| Scan this page | In-page highlighting | Query statistics |
 |---|---|---|
-| ![batch](docs/store/shot5-batch.png) | ![stats](docs/store/shot6-stats.png) | ![float](docs/store/shot4-float.png) |
+| ![scan](docs/store/shot7-scan.png) | ![highlight](docs/store/shot8-highlight.png) | ![stats](docs/store/shot6-stats.png) |
+
+</details>
 
 ---
 
-## ⬇️ Install (30 seconds, no build required)
+## 🧬 Built-in quick reference (98 cancer-related genes, offline)
 
-1. **Download** the latest release zip → [**Releases → latest**](https://github.com/sushuqiong/bio-lookup-extension/releases/latest)
-   (file: `bio-lookup-extension-vX.Y.Z.zip`)
-2. **Unzip** it to any folder you like
-3. Open your browser:
-   - Microsoft Edge → `edge://extensions`
-   - Google Chrome → `chrome://extensions`
-4. Turn on **Developer mode** (Edge: bottom-left sidebar; Chrome: top-right)
-5. Click **Load unpacked** and select the **unzipped folder** (not the zip)
-
-> ⚠️ **Do NOT move or rename the folder after loading.** The browser stores the folder's **absolute path** — moving it makes the extension vanish. Keep it somewhere permanent, e.g. `C:/Users/<you>/Extensions/bio-lookup`.
-
-> Requires Chrome / Edge **116 or newer** (desktop).
-
-### First test
-Open any web page, select `BRCA1`, right-click → you should see **生信快查 · 🧬 基因「BRCA1」**.
-
----
-
-## ✨ Features
-
-### 🧠 Smart type detection (9 kinds)
-| Kind | Examples | Primary databases |
-|---|---|---|
-| 🧬 Gene | `BRCA1` `TP53` `CD274` `miR-21` `HLA-DRA` | NCBI Gene · Ensembl · GeneCards · UniProt |
-| 📦 GEO / SRA | `GSE123456` `GSM123456` | GEO · SRA Run Selector · ArrayExpress |
-| 🔎 rsID | `rs80357906` | dbSNP · ClinVar · gnomAD · VarSome |
-| 🧪 Variant (HGVS) | `NM_007294.4:c.68_69del` `p.Val600Glu` | ClinVar · gnomAD · VarSome · Franklin |
-| 🌍 Variant (coords) | `chr17:7676154 C>T` | gnomAD · ClinVar · UCSC |
-| 🧾 VCF row | `17 7676154 rs80357906 C T` | gnomAD · ClinVar · dbSNP |
-| 🗺️ Region | `chr1:12345-12400` | UCSC · Ensembl |
-| 📚 Literature | `PMID: 12345678` · DOI | PubMed · Europe PMC · Google Scholar · Zotero |
-| 🚀 Sequence | ≥20 bp of `ACGT…` | NCBI BLAST |
-
-The right-click menu **only lists databases relevant to what you selected** — unlike a fixed menu, no clutter.
-
-### 🔍 Scan this page (new in v0.6.0)
-One click extracts **every gene / rsID / variant / GEO accession / PMID / DOI** on the current page,
-de-duplicates and counts them, then fills the batch panel so you can open them all at once.
-Uses the `activeTab` permission — the page is read **only when you click the button**.
-
-### 🖍️ In-page gene highlighting (optional, off by default)
-Highlight known gene symbols / rsIDs / dataset IDs in any web page; click one to open the query card.
-Only **high-confidence** targets from a local vocabulary (113 terms) are marked, capped at 150 per page.
-
-### 🧬 Built-in quick-reference for 98 cancer-related genes
-Select or type a gene and instantly see its **associated cancers and main pathway** — purely local data, no network calls:
-
-| Gene | Cancers | Pathway |
+| Gene | Associated cancers | Main pathway |
 |---|---|---|
 | `BRCA1` | Breast · Ovarian · Prostate · Pancreatic | Homologous recombination repair (HRR) |
 | `CD274` (PD-L1) | Pan-cancer immunotherapy marker · Lung · Gastric | Immune checkpoint |
 | `CLDN18` | Gastric · Gastro-oesophageal junction | Adhesion / therapeutic target |
 | `EGFR` | NSCLC · Colorectal · Glioblastoma | RTK / RAS / MAPK |
+| `DPYD` | 5-FU / capecitabine toxicity | Drug metabolism |
 
-Covers targeted therapy, immune checkpoints, MMR/HRR pathways and chemo-sensitivity genes
-(`DPYD`, `UGT1A1`, `TYMS`, …). Aliases supported: `HER2`→ERBB2, `PD-L1`→CD274, `p53`→TP53, `CLDN18.2`→CLDN18.
+Covers targeted therapy, immune checkpoints, MMR/HRR pathways and chemo-sensitivity genes.
+Aliases supported: `HER2`→ERBB2, `PD-L1`→CD274, `p53`→TP53, `CLDN18.2`→CLDN18.
 
-### 🧾 VCF batch annotation
-Select a VCF block → normalize coordinates (all these become the gnomAD-compatible `17-7676154-C-T`):
-`chr17:7676154 C>T` · `chr17:7676154C>T` · `17-7676154-C-T` · `chr17:g.7676154C>T`.
-Then open gnomAD / ClinVar / VarSome for all rows, or export the normalized query list as CSV.
+---
 
-### 🔬 Sequence tools
-Select a DNA sequence (≥4 bp) → length, GC content, reverse complement and RNA transcript, with one-click copy.
+## 📊 Supported databases (15+)
 
-### 📊 Query statistics
-Total / today / kinds / databases + type distribution bars + top-5 databases + frequent query cloud.
-
-### 🕘 Query history
-Every query is logged (term · type · database · time), searchable, filterable, click to re-run, exportable as CSV — useful for writing Methods or reviewing your own analysis.
-
-### ⚙️ Custom databases
-Add any database with a `{q}` URL template; restrict it to specific types; import/export the config.
-
-### 📗 Zotero integration (optional)
-`PMID` / `DOI` → search your **local** Zotero library → jump with `zotero://select`.
-Requires Zotero 7 running with "Allow other applications to communicate".
-
-### ⌨️ Keyboard shortcut
-`Alt+Shift+B` → open the panel.
+| Category | Databases |
+|---|---|
+| 🧬 Genes | NCBI Gene · Ensembl · GeneCards · UniProt · NCBI Protein · PubMed |
+| 🔎 Variants | dbSNP · ClinVar · gnomAD · VarSome · Franklin · UCSC Genome Browser |
+| 📦 Datasets | GEO · SRA Run Selector · ArrayExpress |
+| 📚 Literature | PubMed · Europe PMC · Google Scholar · Zotero (local) |
+| 🚀 Sequence | NCBI BLAST |
 
 ---
 
 ## 🔒 Privacy
 
-- Default permissions: **`contextMenus`, `activeTab`, `storage`** — **no web page access** until you explicitly enable a feature.
-- Page reading (floating card, highlighting, "scan this page") uses **optional permissions** you grant yourself, and `activeTab` for scanning (only on click).
-- All data (history, settings, custom databases) stays in your browser's local storage. **Nothing is uploaded.**
-- No analytics, no telemetry, no remote code.
+- **Does not read page content by default** — core features need only context menu + local storage
+- Page reading (floating card / highlighting / scan) is **opt-in**; scanning uses `activeTab`, reading the page **only when you click the button**
+- All data (history / settings / custom databases) stays **in your browser; nothing is uploaded**
+- **No account, no analytics, no telemetry, no remote code**
 - Privacy policy: <https://sushuqiong.github.io/bio-lookup-extension/privacy.html>
 
 ---
 
 ## 🧪 Tests
 
-169 automated tests, all runnable offline (Node 18+):
+**169 automated tests**, all runnable offline (Node 18+):
 
 ```bash
-node tests/classify.test.mjs          # 67 — type detection / VCF parsing / URL building
-node tests/genedata.test.mjs          # 26 — gene table / aliases / sequence tools
-node tests/scan.test.mjs              # 21 — page scanning / highlight vocabulary
-node tests/background.sim.mjs         # 14 — background logic against a mocked Chrome API
-node tests/background.bundle.sim.mjs  # 10 — single-file bundle behaviour
-node tests/background.degraded.sim.mjs # 8 — graceful degradation when an API is missing
+node tests/classify.test.mjs           # 67 — detection / VCF parsing / URL building
+node tests/genedata.test.mjs           # 26 — gene table / aliases / sequence tools
+node tests/scan.test.mjs               # 21 — page scanning / highlight vocabulary
+node tests/scanpage.sim.mjs            # 23 — "scan this page" message pipeline
+node tests/background.sim.mjs          # 14 — background logic vs mocked Chrome API
+node tests/background.bundle.sim.mjs   # 10 — single-file bundle behaviour
+node tests/background.degraded.sim.mjs # 8  — graceful degradation when an API is missing
 ```
 
 ---
 
-## 📁 Repository layout
+## ❓ FAQ
 
-```
-manifest.json          # MV3 manifest
-classify.js            # type detection + database map (pure functions)
-genedata.js            # type colors + 98-gene table + sequence tools + page scanning
-background.js          # source of the service worker
-background.bundle.js   # generated single-file worker (no ESM) ← used by the extension
-content.js             # floating card + in-page highlighting (injected on demand)
-popup.html/css/js      # main panel (history / batch / statistics)
-options.html/js        # settings (custom DBs, floating card, highlighting, menu repair)
-build.py               # merges the three modules into background.bundle.js
-tests/                 # 169 automated tests
-docs/                  # GitHub Pages landing page + privacy policy + store screenshots
-```
+<details>
+<summary><b>The right-click menu does not appear</b></summary>
 
-### Rebuild the background bundle
+1. Make sure the extension is enabled (`edge://extensions`)
+2. Select some text first (the menu only shows for selections)
+3. Open the settings page (click the icon → ⚙️) and press **"Recreate right-click menu"** — the page also shows menu diagnostics (created at / items / errors)
 
-```bash
-python build.py     # regenerates background.bundle.js from the three modules
-```
+</details>
+
+<details>
+<summary><b>The extension disappeared after restarting the browser</b></summary>
+
+Almost always because the **folder was moved / renamed / deleted** (the browser stores the absolute path).
+Move it back, or re-unzip and load it again.
+
+</details>
+
+<details>
+<summary><b>Floating card / highlighting does not work</b></summary>
+
+Both are **optional** — enable and authorise them in the settings page, then **reload the page** so the content script is injected.
+Browser-internal pages (`chrome://`), PDF viewers and the extension store are not supported by design.
+
+</details>
+
+<details>
+<summary><b>It sometimes detects the wrong thing</b></summary>
+
+Regex detection cannot be perfect (`COVID`, `MISSING` may look like gene symbols; 7–9 digit numbers may look like PMIDs).
+Every menu therefore ends with generic fallback entries (NCBI all-database search / Google Scholar).
+
+</details>
 
 ---
 
 ## ⚠️ Known limitations
 
-- Regex detection cannot reach zero false positives (`COVID`, `MISSING` may look like gene symbols; 7–9 digit numbers may look like PMIDs) — a generic search fallback is always appended to every menu.
-- The floating card and highlighting do not work on `chrome://` pages, PDF viewers, the extension store, or inside VS Code / Zotero embedded browsers (browser restrictions).
-- Batch and VCF operations are capped at 15–20 items to avoid opening dozens of tabs.
-- Zotero integration requires a local Zotero instance.
+- Regex detection cannot reach zero false positives (see above)
+- Floating card / highlighting do not work on browser-internal pages, PDF viewers, or inside VS Code / Zotero embedded browsers
+- Batch and VCF operations are capped at 15–20 items
+- Zotero integration requires a local Zotero 7 instance with "allow other applications to communicate"
 
 ---
 
-## 📄 License
+## 🛠️ Development & build
 
-[MIT](LICENSE) © 2026 sushuqiong
+<details>
+<summary><b>Project layout / how to rebuild</b></summary>
 
-## 💬 Feedback
+```
+manifest.json          # MV3 manifest
+classify.js            # type detection + database map (pure functions)
+genedata.js            # type colours + 98-gene table + sequence tools + page entity extraction
+background.js          # service worker source
+background.bundle.js   # generated single-file worker (no ESM) — used by the extension
+content.js             # floating card + in-page highlighting (injected on demand)
+popup.html/css/js      # main panel (query / batch / statistics)
+options.html/js        # settings (custom DBs, overlay, highlighting, menu repair)
+build.py               # build script: regenerates background.bundle.js
+tests/                 # 169 automated tests
+docs/                  # GitHub Pages landing page + privacy policy + store assets
+```
 
-Please use [GitHub Issues](https://github.com/sushuqiong/bio-lookup-extension/issues) — no email needed.
+Rebuild the background bundle:
+
+```bash
+python build.py
+```
+
+</details>
+
+<details>
+<summary><b>Changelog</b></summary>
+
+See [CHANGELOG.md](CHANGELOG.md)
+
+</details>
+
+---
+
+## 📄 License & feedback
+
+[MIT License](LICENSE) © 2026 sushuqiong
+
+Questions, bug reports and feature requests: [**GitHub Issues**](https://github.com/sushuqiong/bio-lookup-extension/issues)
+
+If it saves you time, a ⭐ **star** is much appreciated 🙌
+
+<div align="center">
+
+**Saving researchers one copy-paste at a time.**
+
+</div>
