@@ -38,6 +38,8 @@ A browser extension for Chrome / Edge (Manifest V3) · zero dependencies · zero
 4. Turn on **Developer mode** (Edge: bottom-left sidebar; Chrome: top-right)
 5. Click **Load unpacked** and select the **unzipped folder** (not the zip)
 
+> ⚠️ **Do NOT move or rename the folder after loading.** The browser stores the folder's **absolute path** — moving it makes the extension vanish. Keep it somewhere permanent, e.g. `C:/Users/<you>/Extensions/bio-lookup`.
+
 > Requires Chrome / Edge **116 or newer** (desktop).
 
 ### First test
