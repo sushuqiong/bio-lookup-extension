@@ -41,6 +41,7 @@
 
 > ✅ 一键安装 · ✅ 自动更新 · ✅ 重启不丢 · ✅ 无需开发者模式
 >
+> 🔎 **也可以直接在商店里搜**：打开 Edge 商店 → 搜索 **`Bio Lookup`** → 点「获取」
 > 💡 扩展名称按浏览器语言显示：中文环境显示「生信快查 · Bio Lookup」，英文环境显示「Bio Lookup」。
 
 [![Edge Add-ons](https://img.shields.io/badge/%E5%89%8D%E5%BE%80%20Edge%20%E5%95%86%E5%BA%97%E5%AE%89%E8%A3%85-16a34a?style=for-the-badge&logo=microsoftedge)](https://microsoftedge.microsoft.com/addons/detail/nppooifacggmmpmcapgpjengdbhpjcee)

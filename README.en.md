@@ -41,7 +41,8 @@ Ten genes later you have a wall of tabs and no idea which is which.
 
 > ✅ One-click install · ✅ Auto-update · ✅ Survives restarts · ✅ No developer mode
 >
-> 💡 The extension name is displayed according to your browser language: "生信快查 · Bio Lookup" (zh) / "Bio Lookup" (en).
+> 🔎 **Or just search the store**: open Microsoft Edge Add-ons → search for **`Bio Lookup`** → click "Get"
+> 💡 The extension name follows your browser language: "生信快查 · Bio Lookup" (zh) / "Bio Lookup" (en).
 
 [![Edge Add-ons](https://img.shields.io/badge/Get%20it%20from%20Edge%20Add--ons-16a34a?style=for-the-badge&logo=microsoftedge)](https://microsoftedge.microsoft.com/addons/detail/nppooifacggmmpmcapgpjengdbhpjcee)
 
