@@ -5,6 +5,22 @@ All notable changes to **Bio Lookup (生信快查)** are documented here.
 
 ---
 
+## [0.6.3] — 2026-09-15
+
+### 🐞 修复：商店上传验证失败（英文描述超长）
+
+**报错**：`The translation for field Description in locale en is too long ... exceeds maximum size limit of 190 characters`
+
+**原因**：v0.6.2 引入的英文描述约 300 字符，超过 Edge 对 manifest 描述的 **190 字符上限**（中文描述 105 字符，未超限）。
+
+**修复**：英文描述压缩至 168 字符；中文描述同步精简至 105 字符。两种语言的 extName / extDesc / actionTitle 现均在上限内。
+
+### ✅ 验证
+- Edge 官方打包校验通过
+- 描述长度校验：zh_CN 105 / en 168（上限 190），名称 17 / 10（上限 45）
+
+---
+
 ## [0.6.2] — 2026-09-15
 
 ### 🌏 多语言声明（为商店添加中文 listing 铺路）

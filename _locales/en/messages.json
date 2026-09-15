@@ -4,7 +4,7 @@
     "description": "Extension name shown in the store and browser"
   },
   "extDesc": {
-    "message": "Select a gene symbol, GEO accession, variant, rsID or PMID and jump to 15+ bioinformatics databases with a single right-click. Built-in reference for 98 cancer-related genes, page scanning, in-page highlighting, VCF batch annotation, sequence tools and query statistics.",
+    "message": "Select a gene / variant / rsID / GEO / PMID and jump to 15+ bioinformatics databases with one right-click. Includes a 98-gene cancer reference and VCF batch annotation.",
     "description": "Short description (store subtitle)"
   },
   "actionTitle": {
