@@ -5,6 +5,15 @@ All notable changes to **Bio Lookup (生信快查)** are documented here.
 
 ---
 
+## [商店上线] — 2026-09-12
+
+### 🎉 Microsoft Edge Add-ons 正式上线（Live）
+
+- 扩展已通过 Microsoft Edge Add-ons 审核并公开发布
+- 商店链接：<https://microsoftedge.microsoft.com/addons/detail/nppooifacggmmpmcapgpjengdbhpjcee>
+- 商店 ID `ORDCKFTQ6T96` · CRX ID `nppooifacggmmpmcapgpjengdbhpjcee`
+- 现在可以**一键安装、自动更新**，不再需要开发者模式
+
 ## [0.6.1] — 2026-09-11
 
 ### ⚡ 性能

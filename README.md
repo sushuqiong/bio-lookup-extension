@@ -6,7 +6,7 @@
 
 为生信与医学研究者做的浏览器扩展 · 零依赖 · 默认不读网页 · 无追踪
 
-[![Edge Add-ons](https://img.shields.io/badge/Edge%20Add--ons-%E5%AE%A1%E6%A0%B8%E4%B8%AD%20In%20Review-f59e0b?style=for-the-badge)](https://microsoftedge.microsoft.com/addons/detail/ORDCKFTQ6T96)
+[![Edge Add-ons](https://img.shields.io/badge/Edge%20Add--ons-%E5%85%8D%E8%B4%B9%E5%AE%89%E8%A3%85%20Get%20it-16a34a?style=for-the-badge)](https://microsoftedge.microsoft.com/addons/detail/ORDCKFTQ6T96)
 [![Release](https://img.shields.io/github/v/release/sushuqiong/bio-lookup-extension?style=for-the-badge&color=16a34a)](https://github.com/sushuqiong/bio-lookup-extension/releases/latest)
 [![License](https://img.shields.io/github/license/sushuqiong/bio-lookup-extension?style=for-the-badge&color=16a34a)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-169%20passing-16a34a?style=for-the-badge)](tests/)
@@ -35,12 +35,13 @@
 
 ## ⬇️ 安装（30 秒）
 
-### 方式一 · Microsoft Edge 商店 ⏳ *（审核中，1–7 个工作日）*
+### 方式一 · Microsoft Edge 商店 ✅ **（已上线，推荐）**
 
-> 已提交 Microsoft Edge Add-ons 审核（Store ID `ORDCKFTQ6T96`）。上线后可一键安装：
-> **`https://microsoftedge.microsoft.com/addons/detail/ORDCKFTQ6T96`**
->
+**👉 [点这里一键安装](https://microsoftedge.microsoft.com/addons/detail/nppooifacggmmpmcapgpjengdbhpjcee)**
+
 > ✅ 一键安装 · ✅ 自动更新 · ✅ 重启不丢 · ✅ 无需开发者模式
+
+[![Edge Add-ons](https://img.shields.io/badge/%E5%89%8D%E5%BE%80%20Edge%20%E5%95%86%E5%BA%97%E5%AE%89%E8%A3%85-16a34a?style=for-the-badge&logo=microsoftedge)](https://microsoftedge.microsoft.com/addons/detail/nppooifacggmmpmcapgpjengdbhpjcee)
 
 ### 方式二 · GitHub 下载（**现在就能用**）
 

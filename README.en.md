@@ -6,7 +6,7 @@
 
 A browser extension for life-science & medical researchers · zero dependencies · does not read pages by default · no tracking
 
-[![Edge Add-ons](https://img.shields.io/badge/Edge%20Add--ons-In%20Review-f59e0b?style=for-the-badge)](https://microsoftedge.microsoft.com/addons/detail/ORDCKFTQ6T96)
+[![Edge Add-ons](https://img.shields.io/badge/Edge%20Add--ons-Get%20it%20free-16a34a?style=for-the-badge)](https://microsoftedge.microsoft.com/addons/detail/ORDCKFTQ6T96)
 [![Release](https://img.shields.io/github/v/release/sushuqiong/bio-lookup-extension?style=for-the-badge&color=16a34a)](https://github.com/sushuqiong/bio-lookup-extension/releases/latest)
 [![License](https://img.shields.io/github/license/sushuqiong/bio-lookup-extension?style=for-the-badge&color=16a34a)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-169%20passing-16a34a?style=for-the-badge)](tests/)
@@ -35,12 +35,13 @@ Ten genes later you have a wall of tabs and no idea which is which.
 
 ## ⬇️ Install (30 seconds)
 
-### Option 1 · Microsoft Edge Add-ons ⏳ *(in review, 1–7 business days)*
+### Option 1 · Microsoft Edge Add-ons ✅ **(live, recommended)**
 
-> Submitted for review (Store ID `ORDCKFTQ6T96`). Once published it will be one click away:
-> **`https://microsoftedge.microsoft.com/addons/detail/ORDCKFTQ6T96`**
->
+**👉 [Install from the Edge store](https://microsoftedge.microsoft.com/addons/detail/nppooifacggmmpmcapgpjengdbhpjcee)**
+
 > ✅ One-click install · ✅ Auto-update · ✅ Survives restarts · ✅ No developer mode
+
+[![Edge Add-ons](https://img.shields.io/badge/Get%20it%20from%20Edge%20Add--ons-16a34a?style=for-the-badge&logo=microsoftedge)](https://microsoftedge.microsoft.com/addons/detail/nppooifacggmmpmcapgpjengdbhpjcee)
 
 ### Option 2 · GitHub download (**works right now**)
 
