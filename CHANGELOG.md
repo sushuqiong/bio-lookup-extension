@@ -5,6 +5,26 @@ All notable changes to **Bio Lookup (生信快查)** are documented here.
 
 ---
 
+## [0.6.2] — 2026-09-15
+
+### 🌏 多语言声明（为商店添加中文 listing 铺路）
+
+- 新增 `_locales/zh_CN/messages.json` 与 `_locales/en/messages.json` 文案
+- manifest 增加 `default_locale: zh_CN`，并将 `name` / `description` / `action.default_title`
+  改为 `__MSG_*__` 多语言引用
+- 效果：扩展名称与描述按浏览器语言显示 —— 中文环境「生信快查 · Bio Lookup」，英文环境「Bio Lookup」
+
+**为什么做这个**：Microsoft Edge 商店只允许为「**从扩展包中识别出的语言**」创建商店 listing。
+此前扩展包未声明任何语言（缺少 `_locales`），商店判定只有英文 → Store listings 页面的
+「Add language」下拉框被禁用 → 无法为中文用户创建中文商店页面。本版修正后，商店可识别
+中/英两种语言，即可添加中文 listing。
+
+### ✅ 验证
+- Edge 官方打包校验通过（`_locales` 与 `__MSG__` 引用合法）
+- 169 项自动化测试通过
+
+---
+
 ## [商店上线] — 2026-09-12
 
 ### 🎉 Microsoft Edge Add-ons 正式上线（Live）
