@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "生信快查 · Bio Lookup",
+    "description": "扩展名称（商店标题）"
+  },
+  "extDesc": {
+    "message": "选中基因名 / GEO 编号 / 变异位点 / rsID / PMID，右键一键跳转 15+ 生信数据库；内置 98 个肿瘤相关基因速查表、扫描本页提取、网页基因自动高亮、VCF 批量注释、序列工具与查询统计。",
+    "description": "扩展简短描述（商店副标题，132 字符内）"
+  },
+  "actionTitle": {
+    "message": "生信快查 · 查询历史",
+    "description": "工具栏按钮悬停提示"
+  }
+}

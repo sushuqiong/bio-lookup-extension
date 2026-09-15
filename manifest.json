@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "生信快查 · Bio Lookup",
-  "version": "0.6.1",
-  "description": "选中基因名 / GEO 编号 / 变异位点 / rsID / PMID，右键一键跳转 15+ 生信数据库；内置 98 个肿瘤相关基因速查表、扫描本页提取、网页基因自动高亮、VCF 批量注释、序列工具与查询统计。",
+  "name": "__MSG_extName__",
+  "version": "0.6.2",
+  "description": "__MSG_extDesc__",
   "author": "sushuqiong",
   "homepage_url": "https://github.com/sushuqiong/bio-lookup-extension",
   "minimum_chrome_version": "116",
@@ -23,7 +23,7 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "生信快查 · 查询历史",
+    "default_title": "__MSG_actionTitle__",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -43,5 +43,6 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  }
+  },
+  "default_locale": "zh_CN"
 }

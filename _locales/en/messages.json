@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Bio Lookup",
+    "description": "Extension name shown in the store and browser"
+  },
+  "extDesc": {
+    "message": "Select a gene symbol, GEO accession, variant, rsID or PMID and jump to 15+ bioinformatics databases with a single right-click. Built-in reference for 98 cancer-related genes, page scanning, in-page highlighting, VCF batch annotation, sequence tools and query statistics.",
+    "description": "Short description (store subtitle)"
+  },
+  "actionTitle": {
+    "message": "Bio Lookup - query history",
+    "description": "Toolbar button tooltip"
+  }
+}
